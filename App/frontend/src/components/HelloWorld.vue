@@ -87,12 +87,8 @@
 export default {
   created() {
     this.$http.get('/api')
-      .then((response) => {
-        return response.data;
-      })
-      .then((data) => {
-        this.msg = data.message;
-      });
+      .then(response => response.data)
+      .then((data) => { this.msg = data.message; });
   },
   name: 'HelloWorld',
   data() {
