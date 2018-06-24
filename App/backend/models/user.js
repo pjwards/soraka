@@ -9,7 +9,7 @@ const User = new Schema({
 });
 
 // create new User document
-User.statics.create = (username, password) => {
+User.statics.create = function(username, password) {
     const user = new this({
         username,
         password
@@ -20,18 +20,18 @@ User.statics.create = (username, password) => {
 };
 
 // find one user by using username
-User.statics.findOneByUsername = (username) => {
+User.statics.findOneByUsername = function(username) {
     return this.findOne({
         username
     }).exec();
 }
 
 // verify the password of the User documment
-User.methods.verify = (password) => {
+User.methods.verify = function(password) {
     return this.password === password;
 }
 
-User.methods.assignAdmin = () => {
+User.methods.assignAdmin = function() {
     this.admin = true;
     return this.save();
 }

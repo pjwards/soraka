@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import mongoose from 'mongoose';
 
 import indexRouter from './routes/index';
 import apiRouter from './routes/api';
@@ -15,7 +16,9 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -38,6 +41,14 @@ app.use((err, req, res, next) => {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+// db setup
+mongoose.connect(process.env.DB_URL);
+const db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', () => {
+  console.log('connected to mongodb server');
 });
 
 export default app;
