@@ -1,11 +1,12 @@
 {
-  "eslint.workingDirectories": [{
-      "directory": "./App/backend",
-      "changeProcessCWD": true
-    },
-    {
-      "directory": "./App/frontend",
-      "changeProcessCWD": true
-    }
-  ]
+  "eslint.workingDirectories": ["./App/backend", "./App/frontend"]
+  // "eslint.workingDirectories": [{
+  //     "directory": "./App/backend",
+  //     "changeProcessCWD": true
+  //   },
+  //   {
+  //     "directory": "./App/frontend",
+  //     "changeProcessCWD": true
+  //   }
+  // ]
 }
