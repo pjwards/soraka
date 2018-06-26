@@ -1,0 +1,11 @@
+{
+  "eslint.workingDirectories": [{
+      "directory": "./App/backend",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "./App/frontend",
+      "changeProcessCWD": true
+    }
+  ]
+}
