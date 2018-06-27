@@ -1,8 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../../../models/user';
-import {
-  UserService,
-} from '../../../serivces/user';
+import UserService from '../../../serivces/user';
 
 /*
     POST /api/auth/register
@@ -14,21 +11,21 @@ import {
 export function register(req, res) {
   const {
     username,
-    password
+    password,
   } = req.body;
 
   // respond to the client
   const respond = (user) => {
     res.json({
       message: 'registered successfully',
-      admin: user.admin ? true : false
+      admin: !!user.admin,
     });
   };
 
   // run when there is an error (username exists)
   const onError = (error) => {
     res.status(409).json({
-      message: error.message
+      message: error.message,
     });
   };
 
@@ -48,12 +45,12 @@ export function register(req, res) {
 export function login(req, res) {
   const {
     username,
-    password
+    password,
   } = req.body;
   const secret = req.app.get('jwt-secret');
 
   // check the user info & generate the jwt
-  const check = (user) => {
+  const verify = (user) => {
     if (!user) {
       // user does not exist
       throw new Error('login failed');
@@ -62,45 +59,46 @@ export function login(req, res) {
       if (user.verify(password)) {
         // create a promise that generates jwt asynchronously
         const p = new Promise((resolve, reject) => {
-          jwt.sign({
-              _id: user._id,
-              username: user.username,
-              admin: user.admin
-            },
-            secret, {
-              expiresIn: '7d',
-              issuer: 'samplae.com',
-              subject: 'userInfo'
-            }, (err, token) => {
-              if (err) reject(err);
-              resolve(token);
-            })
-        })
+          const payload = {
+            _id: user._id,
+            username: user.username,
+            admin: user.admin,
+          };
+          const options = {
+            expiresIn: '7d',
+            issuer: 'samplae.com',
+            subject: 'userInfo',
+          };
+          const callback = (err, token) => {
+            if (err) reject(err);
+            resolve(token);
+          };
+          jwt.sign(payload, secret, options, callback);
+        });
         return p;
-      } else {
-        throw new Error('login failed');
       }
+      throw new Error('login failed');
     }
   };
 
-  // respond the token 
+  // respond the token
   const respond = (token) => {
     res.json({
       message: 'logged in successfully',
-      token
+      token,
     });
   };
 
   // error occured
   const onError = (error) => {
     res.status(403).json({
-      message: error.message
+      message: error.message,
     });
   };
 
   // find the user
-  User.findOneByUsername(username)
-    .then(check)
+  UserService.findOneByUsername(username)
+    .then(verify)
     .then(respond)
     .catch(onError);
 }
@@ -112,6 +110,6 @@ export function login(req, res) {
 export function check(req, res) {
   res.json({
     success: true,
-    info: req.decoded
+    info: req.decoded,
   });
 }

@@ -17,12 +17,12 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: false
+  extended: false,
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.set('jwt-secret', process.env.JWT_SECRET)
+app.set('jwt-secret', process.env.JWT_SECRET);
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -48,7 +48,7 @@ mongoose.connect(process.env.DB_URL);
 const db = mongoose.connection;
 db.on('error', console.error);
 db.once('open', () => {
-  console.log('connected to mongodb server');
+  console.info('connected to mongodb server');
 });
 
 export default app;

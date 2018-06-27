@@ -1,27 +1,26 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 
-const Schema = mongoose.Schema;
-const secret = process.env.JWT_SECRET
+const secret = process.env.JWT_SECRET;
 
-const User = new Schema({
+const User = new mongoose.Schema({
   username: String,
   password: String,
   admin: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 // create new User document
-User.statics.create = function (username, password) {
+User.statics.create = function create(username, password) {
   const encrypted = crypto
     .createHmac('sha1', secret)
     .update(password)
     .digest('base64');
   const user = new this({
     username,
-    password: encrypted
+    password: encrypted,
   });
 
   // return the Promise
@@ -29,25 +28,25 @@ User.statics.create = function (username, password) {
 };
 
 // find one user by using username
-User.statics.findOneByUsername = function (username) {
+User.statics.findOneByUsername = function findOneByUsername(username) {
   return this.findOne({
-    username
+    username,
   }).exec();
-}
+};
 
 // verify the password of the User documment
-User.methods.verify = function (password) {
+User.methods.verify = function verify(password) {
   const decrypted = crypto
     .createHmac('sha1', secret)
     .update(password)
-    .digest('base64')
+    .digest('base64');
 
   return this.password === decrypted;
-}
+};
 
-User.methods.assignAdmin = function () {
+User.methods.assignAdmin = function assignAdmin() {
   this.admin = true;
   return this.save();
-}
+};
 
 export default mongoose.model('User', User);

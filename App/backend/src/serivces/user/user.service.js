@@ -2,8 +2,6 @@ import User from '../../models/user';
 
 class UserService {
   async create(username, password) {
-    let newUser = null;
-
     let user = await this.findOneByUsername(username);
 
     if (user) {
@@ -13,9 +11,8 @@ class UserService {
     const count = await this.count();
     user = await User.create(username, password);
 
-    // assign admin if count is 0    
     if (count === 0) {
-      await newUser.assignAdmin();
+      await user.assignAdmin();
     }
 
     return user;

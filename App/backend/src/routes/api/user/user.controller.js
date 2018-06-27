@@ -1,25 +1,23 @@
 import User from '../../../models/user';
 
-/* 
+/*
     GET /api/user/list
 */
 export function list(req, res) {
   // refuse if not an admin
   if (!req.decoded.admin) {
     return res.status(403).json({
-      message: 'you are not an admin'
+      message: 'you are not an admin',
     });
   }
 
   User
     .find({})
-    .then(
-      users => {
-        res.json({
-          users
-        })
-      }
-    );
+    .then((users) => {
+      res.json({
+        users,
+      });
+    });
 }
 
 /*
@@ -29,17 +27,15 @@ export function assignAdmin(req, res) {
   // refuse if not an admin
   if (!req.decoded.admin) {
     return res.status(403).json({
-      message: 'you are not an admin'
+      message: 'you are not an admin',
     });
   }
 
   User
     .findOneByUsername(req.params.username)
     .then(
-      user => user.assignAdmin()
-    ).then(
-      res.json({
-        success: true
-      })
-    );
+      user => user.assignAdmin(),
+    ).then(res.json({
+      success: true,
+    }));
 }
