@@ -4,6 +4,9 @@ import axios from 'axios';
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+import {
+  loadSDK,
+} from './utils/facebook';
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
@@ -28,15 +31,4 @@ window.fbAsyncInit = function fbAsyncInit() {
   });
 };
 
-(function loadFacebookSDK(d, s, id) {
-  const fjs = d.getElementsByTagName(s)[0];
-
-  if (d.getElementById(id)) {
-    return;
-  }
-
-  const js = d.createElement(s);
-  js.id = id;
-  js.src = 'https://connect.facebook.net/ko_KR/sdk.js';
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
+loadSDK();
