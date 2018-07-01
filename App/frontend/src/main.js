@@ -6,7 +6,9 @@ import App from './App';
 import router from './router';
 import {
   loadSDK,
-} from './utils/facebook';
+  asyncInit,
+  subscribe,
+} from './api/facebook';
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
@@ -22,13 +24,13 @@ new Vue({
 });
 
 // load facebook sdk
-window.fbAsyncInit = function fbAsyncInit() {
-  window.FB.init({
-    appId: '1621617961401149',
-    autoLogAppEvents: true,
-    xfbml: true,
-    version: 'v3.0',
-  });
-};
+window.fbAsyncInit = asyncInit({
+  appId: process.env.FACEBOOK_APP_ID,
+  autoLogAppEvents: true,
+  xfbml: true,
+  version: process.env.FACEBOOK_API_VERSION,
+}, () => {
+  subscribe('auth.authResponseChange', response => console.log(response));
+});
 
 loadSDK();

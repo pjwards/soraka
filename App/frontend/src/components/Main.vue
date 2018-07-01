@@ -9,6 +9,9 @@
       <li @click='login'>
         Login
       </li>
+      <li @click='logout'>
+        Logout
+      </li>
     </ul>
   </div>
 </template>
@@ -17,7 +20,8 @@
 import {
   getLoginStatus,
   login,
-} from '../utils/facebook';
+  logout,
+} from '../api/facebook';
 
 export default {
   created() {
@@ -36,10 +40,13 @@ export default {
   },
   methods: {
     getLoginStatus: () => {
-      getLoginStatus();
+      getLoginStatus().then(response => console.log(response));
     },
     login: () => {
-      login();
+      login().then(response => console.log(response));
+    },
+    logout: () => {
+      logout().then(response => console.log(response));
     },
   },
 };
