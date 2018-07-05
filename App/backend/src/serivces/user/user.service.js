@@ -1,15 +1,25 @@
 import User from '../../models/user';
 
 class UserService {
-  async create(username, password) {
-    let user = await this.findOneByUsername(username);
+  async create(
+    oauth,
+    email,
+    name,
+    picture
+  ) {
+    let user = await this.findOneByEmail(email);
 
     if (user) {
       throw new Error('username exists');
     }
 
     const count = await this.count();
-    user = await User.create(username, password);
+    user = await User.create(
+      oauth,
+      email,
+      name,
+      picture
+    );
 
     if (count === 0) {
       await user.assignAdmin();
@@ -18,8 +28,12 @@ class UserService {
     return user;
   }
 
-  async findOneByUsername(username) {
-    return User.findOneByUsername(username);
+  async findOneByEmail(email) {
+    return User.findOneByEmail(email);
+  }
+
+  async findAll() {
+    return User.find({});
   }
 
   async count() {

@@ -1,4 +1,4 @@
-import User from '../../../models/user';
+import UserService from '../../../serivces/user';
 
 /*
     GET /api/user/list
@@ -11,8 +11,8 @@ export function list(req, res) {
     });
   }
 
-  User
-    .find({})
+  UserService
+    .findAll()
     .then((users) => {
       res.json({
         users,
@@ -31,7 +31,7 @@ export function assignAdmin(req, res) {
     });
   }
 
-  User
+  UserService
     .findOneByUsername(req.params.username)
     .then(
       user => user.assignAdmin(),

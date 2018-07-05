@@ -1,4 +1,6 @@
 {
   "eslint.workingDirectories": ["./App/backend", "./App/frontend"],
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "es5"
 }

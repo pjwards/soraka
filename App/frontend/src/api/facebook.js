@@ -69,9 +69,9 @@ export function logout() {
     });
 }
 
-export function getUser() {
+export function getUser(fields = 'id,name,email,picture') {
   return new Promise((resolve) => {
-    window.FB.api('/me', (user) => {
+    window.FB.api(`/me${fields ? `?fields=${fields}` : ''}`, (user) => {
       console.log(`Good to see you, ${user.name}.`);
       resolve(user);
     });

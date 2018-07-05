@@ -12,6 +12,9 @@
       <li @click='logout'>
         Logout
       </li>
+      <li @click='getUser'>
+        Get User
+      </li>
     </ul>
   </div>
 </template>
@@ -21,6 +24,7 @@ import {
   getLoginStatus,
   login,
   logout,
+  getUser,
 } from '../api/facebook';
 
 export default {
@@ -47,6 +51,9 @@ export default {
     },
     logout: () => {
       logout().then(response => console.log(response));
+    },
+    getUser: () => {
+      getUser().then(response => console.log(response));
     },
   },
 };
