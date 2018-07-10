@@ -12,6 +12,12 @@
       <li @click='logout'>
         Logout
       </li>
+      <li @click='signin'>
+        Sign In
+      </li>
+    </ul>
+
+    <ul>
       <li @click='getUser'>
         Get User
       </li>
@@ -46,6 +52,10 @@ export default class HelloWorld extends Vue {
 
   public logout(): void {
     logout().subscribe((response) => console.log(response));
+  }
+
+  public signin(): void {
+    getLoginStatus().subscribe((response) => console.log(response));
   }
 
   public getUser(): void {

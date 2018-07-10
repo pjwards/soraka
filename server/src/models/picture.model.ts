@@ -1,11 +1,12 @@
 import {Entity, property, model} from '@loopback/repository';
+import PictureInterface from '../shared/domain/inteface/picture.inteface';
 
 @model()
-export class Picture extends Entity {
+export class Picture extends Entity implements PictureInterface {
   @property({
     id: true,
   })
-  id?: number;
+  id: string;
 
   @property({
     required: true,
@@ -27,7 +28,7 @@ export class Picture extends Entity {
   })
   silhouette: boolean;
 
-  getId() {
+  getId(): string {
     return this.id;
   }
 }

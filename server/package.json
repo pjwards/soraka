@@ -1,7 +1,6 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "server",
+  "name": "nibble-server",
+  "version": "0.1.0",
   "keywords": [
     "loopback-application",
     "loopback"

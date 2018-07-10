@@ -6,6 +6,9 @@
     "test",
     "index.ts"
   ],
+  "paths": {
+    "@/*": ["src/*"]
+  },
   "exclude": [
     "node_modules/**",
     "packages/*/node_modules/**",

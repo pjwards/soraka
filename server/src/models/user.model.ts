@@ -1,8 +1,9 @@
 import {Entity, property, model} from '@loopback/repository';
-import { Picture } from './picture.model';
+import {Picture} from './picture.model';
+import UserInterface from '../shared/domain/inteface/user.inteface';
 
 @model()
-export class User extends Entity {
+export class User extends Entity implements UserInterface {
   @property({
     id: true,
   })
@@ -18,10 +19,9 @@ export class User extends Entity {
   })
   name: string;
 
-  @property()
-  picture?: Picture;
+  @property() picture?: Picture;
 
-  getId() {
+  getId(): string {
     return this.id;
   }
 }
