@@ -1,6 +1,6 @@
-import PictureInterface from './picture.inteface';
+import {PictureInterface} from './picture.inteface';
 
-export default interface UserInterface {
+export interface UserInterface {
   id: string;
   email: string;
   name: string;

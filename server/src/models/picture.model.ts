@@ -1,5 +1,5 @@
 import {Entity, property, model} from '@loopback/repository';
-import PictureInterface from '../shared/domain/inteface/picture.inteface';
+import {PictureInterface} from '../shared/domain/inteface/picture.inteface';
 
 @model()
 export class Picture extends Entity implements PictureInterface {
@@ -24,7 +24,8 @@ export class Picture extends Entity implements PictureInterface {
   height: number;
 
   @property({
-    required: true,
+    required: false,
+    default: false,
   })
   silhouette: boolean;
 

@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import { getLoginStatus, login, logout, getUser } from '../api/facebook';
+import { StatusResponse } from '../facebook.interfaces';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
@@ -43,23 +44,22 @@ export default class HelloWorld extends Vue {
   }
 
   public getLoginStatus(): void {
-    getLoginStatus().subscribe((response) => console.log(response));
+    getLoginStatus().subscribe((response: StatusResponse) => console.log(response));
   }
 
   public login(): void {
-    login().subscribe((response) => console.log(response));
+    login().subscribe((response: StatusResponse) => console.log(response));
   }
 
   public logout(): void {
-    logout().subscribe((response) => console.log(response));
+    logout().subscribe((response: StatusResponse) => console.log(response));
   }
 
   public signin(): void {
-    getLoginStatus().subscribe((response) => console.log(response));
   }
 
   public getUser(): void {
-    getUser().subscribe((response) => console.log(response));
+    getUser().subscribe((response: StatusResponse) => console.log(response));
   }
 }
 </script>

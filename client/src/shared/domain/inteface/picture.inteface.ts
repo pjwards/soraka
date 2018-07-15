@@ -1,4 +1,4 @@
-export default interface PictureInterface {
+export interface PictureInterface {
   id: string;
   url: string;
   width: number;
