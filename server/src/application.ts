@@ -1,9 +1,5 @@
 import {ApplicationConfig} from '@loopback/core';
-import {
-  RestApplication,
-  RestServer,
-  RestBindings
-} from '@loopback/rest';
+import {RestApplication, RestServer, RestBindings} from '@loopback/rest';
 import {MySequence} from './sequence';
 import {DbDataSource} from './datasources/db.datasource';
 
@@ -21,8 +17,9 @@ import {
 } from '@loopback/repository';
 /* tslint:enable:no-unused-variable */
 
-
-export class ServerApplication extends BootMixin(RepositoryMixin(RestApplication)) {
+export class ServerApplication extends BootMixin(
+  RepositoryMixin(RestApplication),
+) {
   constructor(options?: ApplicationConfig) {
     super(options);
 

@@ -2,6 +2,8 @@ import {
   InitParams,
   StatusResponse,
   EVENT,
+  STATUS,
+  UserResponse,
 } from '@/facebook.interfaces';
 import {
   AsyncSubject, Subject, Observable,
@@ -48,18 +50,21 @@ export function loadSDK(): void {
  */
 export function getLoginStatus(force?: boolean): Observable<StatusResponse> {
   const subject: Subject<StatusResponse> = new AsyncSubject();
+
   window.FB.getLoginStatus((response: StatusResponse): void => {
     subject.next(response);
     subject.complete();
   }, force);
+
   return subject;
 }
 
 export function login(): Observable<StatusResponse> {
   const subject: Subject<StatusResponse> = new AsyncSubject();
+
   getLoginStatus()
     .subscribe((loginStatus: StatusResponse): void => {
-      if (loginStatus.status === 'connected') {
+      if (loginStatus.status === STATUS.CONNECTED) {
         throw new Error('The user is already connected.');
       }
 
@@ -68,31 +73,33 @@ export function login(): Observable<StatusResponse> {
         subject.complete();
       });
     });
+
   return subject;
 }
 
 export function logout(): Observable<StatusResponse> {
   const subject: Subject<StatusResponse> = new AsyncSubject();
-  getLoginStatus()
-    .subscribe((loginStatus: StatusResponse): void => {
-      if (loginStatus.status === 'connected') {
-        throw new Error('The user is already connected.');
-      }
 
-      window.FB.logout((response: StatusResponse) => {
-        subject.next(response);
-        subject.complete();
-      });
-    });
+  if (!window.FB.getAccessToken()) {
+    throw new Error('The user is already logout.');
+  }
+
+  window.FB.logout((response: StatusResponse) => {
+    subject.next(response);
+    subject.complete();
+  });
+
   return subject;
 }
 
-export function getUser(fields: string = 'id,name,email,picture'): Observable<any> {
+export function getUser(fields: string = 'id,name,email,picture'): Observable<UserResponse> {
   const subject: Subject<any> = new AsyncSubject();
+
   window.FB.api(`/me${fields ? `?fields=${fields}` : ''}`, (user: any) => {
     subject.next(user);
     subject.complete();
   });
+
   return subject;
 }
 

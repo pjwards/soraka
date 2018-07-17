@@ -4,5 +4,5 @@ export interface UserInterface {
   id: string;
   email: string;
   name: string;
-  picture?: PictureInterface;
+  picture: PictureInterface | null;
 }

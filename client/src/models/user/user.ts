@@ -5,9 +5,9 @@ export class User implements UserInterface {
   public id: string;
   public email: string;
   public name: string;
-  public picture?: Picture;
+  public picture: Picture | null;
 
-  constructor(id: string, email: string, name: string, picture?: Picture) {
+  constructor(id: string, email: string, name: string, picture: Picture | null = null) {
     this.id = id;
     this.email = email;
     this.name = name;

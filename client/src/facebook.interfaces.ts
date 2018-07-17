@@ -92,6 +92,8 @@ export interface Facebook {
      * @see https://developers.facebook.com/docs/pages/page-tab-dialog
      */
     ui(params: SendDialogParams | AddPageTabDialogParams, callback: (response: null) => void): void;
+
+    getAccessToken(): string;
 }
 
 export interface InitParams {
@@ -239,6 +241,23 @@ export interface LiveDialogResponse {
     stream_url: string;
     secure_stream_url: string;
     status: string;
+}
+
+
+export interface UserResponse {
+    id: string;
+    email: string;
+    name: string;
+    picture?: PictureResponse;
+}
+
+export interface PictureResponse {
+    data: {
+        url: string;
+        width: number;
+        height: number;
+        is_silhouette: boolean;
+    };
 }
 
 ////////////////////////

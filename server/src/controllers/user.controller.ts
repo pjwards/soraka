@@ -1,25 +1,40 @@
 import {Filter, Where, repository} from '@loopback/repository';
-import {
-  post,
-  param,
-  get,
-  put,
-  patch,
-  del,
-  requestBody
-} from '@loopback/rest';
-import {User} from '../models';
-import {UserRepository} from '../repositories';
+import {post, param, get, put, patch, del, requestBody} from '@loopback/rest';
+import {User, Picture} from '../models';
+import {UserRepository, PictureRepository} from '../repositories';
+import {UserInterface} from '../shared';
 
 export class UserController {
   constructor(
-    @repository(UserRepository)
-    public userRepository : UserRepository,
+    @repository(UserRepository) public userRepository: UserRepository,
+    @repository(PictureRepository) public pitureRepository: PictureRepository,
   ) {}
 
+  // @post('/users')
+  // async create(@requestBody() obj: UserInterface): Promise<UserInterface> {
+  //   let picture: Picture | null = null;
+
+  //   if (obj.picture) {
+  //     picture = await this.pitureRepository.create(obj.picture as Partial<
+  //       Picture
+  //     >);
+  //   }
+
+  //   const user: User = await this.userRepository.create({
+  //     ...obj,
+  //     pictureId: picture ? picture.id : null,
+  //   } as Partial<User>);
+
+  //   return Promise.resolve<UserInterface>({
+  //     id: user.id,
+  //     email: user.email,
+  //     name: user.name,
+  //     picture: picture,
+  //   } as UserInterface);
+  // }
+
   @post('/users')
-  async create(@requestBody() obj: User)
-    : Promise<User> {
+  async create(@requestBody() obj: User): Promise<User> {
     return await this.userRepository.create(obj);
   }
 
@@ -29,15 +44,14 @@ export class UserController {
   }
 
   @get('/users')
-  async find(@param.query.string('filter') filter: Filter)
-    : Promise<User[]> {
+  async find(@param.query.string('filter') filter: Filter): Promise<User[]> {
     return await this.userRepository.find(filter);
   }
 
   @patch('/users')
   async updateAll(
     @param.query.string('where') where: Where,
-    @requestBody() obj: User
+    @requestBody() obj: User,
   ): Promise<number> {
     return await this.userRepository.updateAll(where, obj);
   }
@@ -55,7 +69,7 @@ export class UserController {
   @patch('/users/{id}')
   async updateById(
     @param.path.string('id') id: string,
-    @requestBody() obj: User
+    @requestBody() obj: User,
   ): Promise<boolean> {
     return await this.userRepository.updateById(id, obj);
   }

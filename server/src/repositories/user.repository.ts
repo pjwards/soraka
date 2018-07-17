@@ -17,7 +17,7 @@ export class UserRepository extends DefaultCrudRepository<
     console.log(entity.email, count);
 
     if (count > 0) {
-      throw new Error("Alreay user exists.");
+      throw new Error('Alreay user exists.');
     }
 
     return super.create(entity, options);
