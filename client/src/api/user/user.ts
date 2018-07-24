@@ -8,6 +8,7 @@ import { login, getUser, getLoginStatus, logout } from '@/api/facebook';
 import { StatusResponse, STATUS, UserResponse } from '@/facebook.interfaces';
 import { API_SERVER } from '@/settings';
 import { Picture } from '@/models/picture';
+import { PictureInterface } from '@/shared/domain/inteface';
 
 export function signin(): Observable<User> {
   return getLoginStatus()
@@ -47,11 +48,25 @@ export function signin(): Observable<User> {
 
           if (response.picture && response.picture.data) {
             const data = response.picture.data;
-            picture = new Picture('', data.url, data.width, data.height, data.is_silhouette);
+            picture = new Picture({
+              id: null,
+              url: data.url,
+              width: data.width,
+              height: data.height,
+              silhouette: data.is_silhouette,
+            } as PictureInterface);
           }
 
           return from<User>(
-            axios.post(API_SERVER + '/users', new User('', email, name, picture)),
+            axios.post(
+              API_SERVER + '/users',
+              new User({
+                email,
+                name,
+                picture,
+                id: null,
+              }),
+            ),
           );
         },
       ),

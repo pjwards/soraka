@@ -4,11 +4,10 @@ import {PictureInterface} from '../shared/domain/inteface/picture.inteface';
 @model()
 export class Picture extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
-    required: true,
   })
-  id: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -34,8 +33,4 @@ export class Picture extends Entity {
     default: false,
   })
   silhouette: boolean;
-
-  getId(): string {
-    return this.id;
-  }
 }

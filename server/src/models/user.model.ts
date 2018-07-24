@@ -5,11 +5,10 @@ import {UserInterface} from '../shared/domain/inteface/user.inteface';
 @model()
 export class User extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
-    required: true,
   })
-  id: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -23,14 +22,8 @@ export class User extends Entity {
   })
   name: string;
 
-  // @property({
-  //   type: 'string',
-  // })
-  // pictureId: string;
-
-  @property() picture: Picture;
-
-  getId(): string {
-    return this.id;
-  }
+  @property({
+    type: 'number',
+  })
+  pictureId: number;
 }

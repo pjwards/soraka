@@ -1,5 +1,5 @@
 export interface PictureInterface {
-  id: string | null;
+  id: number | null;
   url: string;
   width: number;
   height: number;

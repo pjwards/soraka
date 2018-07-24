@@ -1,10 +1,6 @@
 {
   "name": "db",
-  "connector": "mongodb",
-  "url": "mongodb://localhost:27017/nibble",
-  "host": "localhost",
-  "port": 27017,
-  "user": "",
-  "password": "",
-  "database": "nibble"
+  "connector": "memory",
+  "localStorage": "",
+  "file": "./data/db.json"
 }
