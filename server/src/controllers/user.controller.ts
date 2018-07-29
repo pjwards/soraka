@@ -11,13 +11,26 @@ export class UserController {
   ) {}
 
   @post('/users')
-  async create(@requestBody() obj: UserInterface): Promise<UserInterface> {
+  async create(
+    @param.header.string('Access-Token') accessToken: string,
+    @requestBody() obj: UserInterface,
+  ): Promise<UserInterface> {
+    // TODO fb인증 작업 개시
+    console.log(accessToken);
+
     let picture: Picture | null = null;
+
+    const count: number = await this.userRepository.count({email: obj.email});
+
+    if (count > 0) {
+      throw new Error('Alreay user exists.');
+    }
 
     if (obj.picture) {
       picture = await this.pitureRepository.create(obj.picture as Partial<
         Picture
       >);
+      delete obj.picture;
     }
 
     const user: User = await this.userRepository.create({
