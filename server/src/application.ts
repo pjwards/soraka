@@ -17,11 +17,22 @@ import {
 } from '@loopback/repository';
 /* tslint:enable:no-unused-variable */
 
+import {
+  AuthenticationComponent,
+  AuthenticationBindings,
+} from '@loopback/authentication';
+import {MyAuthStrategyProvider} from './providers/auth-strategy.provider';
+
 export class ServerApplication extends BootMixin(
   RepositoryMixin(RestApplication),
 ) {
   constructor(options?: ApplicationConfig) {
     super(options);
+
+    this.component(AuthenticationComponent);
+    this.bind(AuthenticationBindings.STRATEGY).toProvider(
+      MyAuthStrategyProvider,
+    );
 
     // Set up the custom sequence
     this.sequence(MySequence);

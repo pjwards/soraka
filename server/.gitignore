@@ -62,5 +62,10 @@ api-docs/
 
 # Transpiled JavaScript files from Typescript
 dist/
-dist.*/
+dist8/
+dist10/
 data/
+
+# Jetbrains
+.idea/
+*.iml

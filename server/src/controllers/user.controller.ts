@@ -1,35 +1,52 @@
-import {Filter, Where, repository} from '@loopback/repository';
-import {post, param, get, put, patch, del, requestBody} from '@loopback/rest';
-import {User, Picture} from '../models';
-import {UserRepository, PictureRepository} from '../repositories';
-import {UserInterface} from '../shared';
+import {
+  Filter,
+  Where,
+  repository
+} from '@loopback/repository';
+import {
+  post,
+  param,
+  get,
+  put,
+  patch,
+  del,
+  requestBody
+} from '@loopback/rest';
+import {
+  AuthenticationBindings,
+  authenticate,
+} from '@loopback/authentication';
+import { inject } from '@loopback/context';
+import {
+  User,
+  Picture
+} from '../models';
+import {
+  UserRepository,
+  PictureRepository
+} from '../repositories';
+import { UserInterface } from '../shared';
 
 export class UserController {
   constructor(
     @repository(UserRepository) public userRepository: UserRepository,
     @repository(PictureRepository) public pitureRepository: PictureRepository,
-  ) {}
+    @inject(AuthenticationBindings.CURRENT_USER) private user: User,
+  ) {
+  }
 
   @post('/users')
-  async create(
-    @param.header.string('Access-Token') accessToken: string,
-    @requestBody() obj: UserInterface,
-  ): Promise<UserInterface> {
-    // TODO fb인증 작업 개시
-    console.log(accessToken);
-
+  async create(@requestBody() obj: UserInterface): Promise<UserInterface> {
     let picture: Picture | null = null;
 
-    const count: number = await this.userRepository.count({email: obj.email});
+    const count: number = await this.userRepository.count({ email: obj.email });
 
     if (count > 0) {
       throw new Error('Alreay user exists.');
     }
 
     if (obj.picture) {
-      picture = await this.pitureRepository.create(obj.picture as Partial<
-        Picture
-      >);
+      picture = await this.pitureRepository.create(obj.picture as Partial<Picture>);
       delete obj.picture;
     }
 
@@ -46,6 +63,7 @@ export class UserController {
     } as UserInterface);
   }
 
+  @authenticate('AccessTokenStrategy')
   @get('/users/count')
   async count(@param.query.string('where') where: Where): Promise<number> {
     return await this.userRepository.count(where);

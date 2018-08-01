@@ -1,0 +1,38 @@
+import { Strategy } from 'passport';
+import { Request } from 'express';
+import {
+  AccessTokenStrategyOptions,
+  AccessTokenStrategyVerify
+} from './access-token.interfaces';
+
+export class AccessTokenStrategy extends Strategy {
+
+  public readonly name: string;
+
+  private readonly verify: AccessTokenStrategyVerify;
+
+  constructor(options: AccessTokenStrategyOptions, verify: AccessTokenStrategyVerify) {
+    super();
+    if (typeof options === 'function') {
+      verify = options;
+      options = {};
+    }
+    if (!verify) throw new Error('Access Token authentication strategy requires a verify function');
+
+    this.name = 'access-token';
+    this.verify = verify;
+  }
+
+  authenticate(req: Request, options?: object): void {
+    const accessToken: string = req.headers['access-token'] as string;
+    if (!accessToken) {
+      return this.fail(400);
+    }
+
+    this.verify(accessToken, (err, user) => {
+      if (err) { return this.error(err); }
+      if (!user) { return this.fail(400); }
+      this.success(user);
+    });
+  }
+}
