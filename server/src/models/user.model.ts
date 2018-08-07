@@ -1,6 +1,4 @@
 import {Entity, property, model} from '@loopback/repository';
-import {Picture} from './picture.model';
-import {UserInterface} from '../shared/domain/inteface/user.inteface';
 
 @model()
 export class User extends Entity {

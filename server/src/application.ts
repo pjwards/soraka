@@ -1,7 +1,7 @@
 import {ApplicationConfig} from '@loopback/core';
 import {RestApplication, RestServer, RestBindings} from '@loopback/rest';
 import {MySequence} from './sequence';
-import {DbDataSource} from './datasources/db.datasource';
+import {DbDataSource} from './datasources';
 
 /* tslint:disable:no-unused-variable */
 // Binding and Booter imports are required to infer types for BootMixin!

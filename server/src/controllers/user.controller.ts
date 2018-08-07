@@ -7,14 +7,12 @@ import {
   post,
   param,
   get,
-  put,
   patch,
   del,
   requestBody
 } from '@loopback/rest';
 import {
   AuthenticationBindings,
-  authenticate,
 } from '@loopback/authentication';
 import { inject } from '@loopback/context';
 import {
@@ -63,7 +61,6 @@ export class UserController {
     } as UserInterface);
   }
 
-  @authenticate('AccessTokenStrategy')
   @get('/users/count')
   async count(@param.query.string('where') where: Where): Promise<number> {
     return await this.userRepository.count(where);

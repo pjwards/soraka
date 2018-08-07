@@ -1,11 +1,12 @@
-import {DefaultCrudRepository, juggler, Options} from '@loopback/repository';
-import {User} from '../models';
-import {inject} from '@loopback/core';
+import {
+  DefaultCrudRepository,
+  juggler,
+} from '@loopback/repository';
+import { User } from '../models';
+import { inject } from '@loopback/core';
 
-export class UserRepository extends DefaultCrudRepository<
-  User,
-  typeof User.prototype.id
-> {
+export class UserRepository extends DefaultCrudRepository<User,
+  typeof User.prototype.id> {
   constructor(
     @inject('datasources.db') protected datasource: juggler.DataSource,
   ) {
@@ -13,6 +14,6 @@ export class UserRepository extends DefaultCrudRepository<
   }
 
   async findByEmail(email: string): Promise<User[]> {
-    return this.find({where: {email: email}});
+    return this.find({ where: { email: email } });
   }
 }

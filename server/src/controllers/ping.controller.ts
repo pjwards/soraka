@@ -1,12 +1,16 @@
-import {Request, RestBindings} from '@loopback/rest';
-import {get} from '@loopback/openapi-v3';
-import {inject} from '@loopback/context';
+import {
+  Request,
+  RestBindings
+} from '@loopback/rest';
+import { get } from '@loopback/openapi-v3';
+import { inject } from '@loopback/context';
 
 /**
  * A simple controller to bounce back http requests
  */
 export class PingController {
-  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {
+  }
 
   // Map to `GET /ping`
   @get('/ping')
