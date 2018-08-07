@@ -40,7 +40,7 @@ export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
         {} as AccessTokenStrategyOptions,
         (
           accessToken: string,
-          cb: (err: Error | null, user?: User | false) => void,
+          cb: (err: Error | null, user: User | null) => void,
         ) => {
           me(accessToken)
             .then((userInfo: UserResponse): Promise<User[]> =>
@@ -48,17 +48,10 @@ export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
             )
             .then((users: User[]) => {
               if (users.length === 0) {
-                cb(
-                  {
-                    name: '400',
-                    message: 'User not found',
-                  } as Error,
-                  false
-                );
-                return;
+                cb(null, null);
+              } else {
+                cb(null, users[0]);
               }
-
-              cb(null, users[0]);
             });
         }
       );

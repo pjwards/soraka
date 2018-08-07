@@ -29,17 +29,17 @@
   import * as fb from '../api/facebook';
   import {
     login,
-    signin
+    signin,
   } from '../api/user';
   import {
     StatusResponse,
-    UserResponse
+    UserResponse,
   } from '../facebook.interfaces';
   import { User } from '../models/user';
   import {
     Component,
     Prop,
-    Vue
+    Vue,
   } from 'vue-property-decorator';
 
   @Component
@@ -68,7 +68,7 @@
     }
 
     public signin(): void {
-      signin().subscribe((user: User) => console.log(user));
+      signin().subscribe((user: User) => this.$store.dispatch('login', user));
     }
 
     public getUser(): void {

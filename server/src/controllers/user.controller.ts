@@ -29,7 +29,7 @@ export class UserController {
   constructor(
     @repository(UserRepository) public userRepository: UserRepository,
     @repository(PictureRepository) public pitureRepository: PictureRepository,
-    @inject(AuthenticationBindings.CURRENT_USER) private user: User,
+    @inject.getter(AuthenticationBindings.CURRENT_USER) private user: User,
   ) {
   }
 

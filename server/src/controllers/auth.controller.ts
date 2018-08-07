@@ -8,14 +8,17 @@ import {
   AuthenticationBindings,
   authenticate,
 } from '@loopback/authentication';
-import { inject } from '@loopback/context';
+import {
+  Getter,
+  inject,
+} from '@loopback/context';
 import {
   User,
-  Picture
+  Picture,
 } from '../models';
 import {
   UserRepository,
-  PictureRepository
+  PictureRepository,
 } from '../repositories';
 import { UserInterface } from '../shared';
 
@@ -23,21 +26,22 @@ export class AuthController {
   constructor(
     @repository(UserRepository) public userRepository: UserRepository,
     @repository(PictureRepository) public pitureRepository: PictureRepository,
-    @inject(AuthenticationBindings.CURRENT_USER) private user: User,
+    @inject.getter(AuthenticationBindings.CURRENT_USER) private getCurrentUser: Getter<User>,
   ) {
   }
 
   @authenticate('AccessTokenStrategy')
   @get('/login')
   async login(): Promise<UserInterface> {
+    const user: User = await this.getCurrentUser();
     const picture: Picture = await this.pitureRepository.findById(
-      this.user.pictureId,
+      user.pictureId,
     );
 
     return Promise.resolve<UserInterface>({
-      id: this.user.id,
-      email: this.user.email,
-      name: this.user.name,
+      id: user.id,
+      email: user.email,
+      name: user.name,
       picture: picture,
     } as UserInterface);
   }

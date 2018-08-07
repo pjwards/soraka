@@ -1,10 +1,11 @@
 import {
   Observable,
-  of
+  of,
 } from 'rxjs';
 import {
+  catchError,
   flatMap,
-  switchMap
+  switchMap,
 } from 'rxjs/operators';
 import axios from 'axios';
 
@@ -14,7 +15,7 @@ import * as fb from '@/api/facebook';
 import {
   StatusResponse,
   STATUS,
-  UserResponse
+  UserResponse,
 } from '@/facebook.interfaces';
 import { API_SERVER } from '@/settings';
 import { Picture } from '@/models/picture';
@@ -115,40 +116,25 @@ export function login(): Observable<User> {
 export function currentUser(): Observable<User | null> {
   return getLoginStatus().pipe(
     flatMap(
-      (response: StatusResponse): Observable<UserResponse | null> => {
+      (response: StatusResponse): Observable<User | null> => {
         if (response.status !== STATUS.CONNECTED) {
           return of(null);
         }
-        return fb.getUser();
+        return from<User>(
+          axios.get(
+            API_SERVER + '/login',
+            {
+              headers: { 'Access-Token': window.FB.getAccessToken() },
+            },
+          ),
+        ).pipe(
+          catchError((): Observable<null> => {
+            return fb.logout().pipe(
+              switchMap(() => of(null)),
+            );
+          }),
+        );
       },
     ),
-    switchMap((response: UserResponse | null): Observable<User | null> => {
-      if (!response) {
-        return of(null);
-      }
-
-      const email: string = response.email;
-      const name: string = response.name;
-      let picture: Picture | null = null;
-
-      if (response.picture && response.picture.data) {
-        const data = response.picture.data;
-        picture = new Picture({
-          id: null,
-          url: data.url,
-          width: data.width,
-          height: data.height,
-          silhouette: data.is_silhouette,
-        } as PictureInterface);
-      }
-      return of(
-        new User({
-          email,
-          name,
-          picture,
-          id: null,
-        }),
-      );
-    }),
   );
 }

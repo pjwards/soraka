@@ -4,6 +4,7 @@ import {
   AccessTokenStrategyOptions,
   AccessTokenStrategyVerify
 } from './access-token.interfaces';
+import { User } from '../../models';
 
 export class AccessTokenStrategy extends Strategy {
 
@@ -29,10 +30,15 @@ export class AccessTokenStrategy extends Strategy {
       return this.fail(400);
     }
 
-    this.verify(accessToken, (err, user) => {
-      if (err) { return this.error(err); }
-      if (!user) { return this.fail(400); }
-      this.success(user);
+    this.verify(accessToken, (err: Error | null, user?: User | null): void => {
+      if (err) {
+        return this.error(err);
+      }
+      if (!user) {
+        return this.fail(400);
+      } else {
+        this.success(user);
+      }
     });
   }
 }
