@@ -1,14 +1,25 @@
-import { Observable } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import {
+  Observable,
+  of
+} from 'rxjs';
+import {
+  flatMap,
+  switchMap
+} from 'rxjs/operators';
 import axios from 'axios';
 
 import { User } from '@/models/user';
 import { from } from '@/utils/http';
 import * as fb from '@/api/facebook';
-import { StatusResponse, STATUS, UserResponse } from '@/facebook.interfaces';
+import {
+  StatusResponse,
+  STATUS,
+  UserResponse
+} from '@/facebook.interfaces';
 import { API_SERVER } from '@/settings';
 import { Picture } from '@/models/picture';
 import { PictureInterface } from '@/shared/domain/inteface';
+import { getLoginStatus } from '@/api/facebook';
 
 export function signin(): Observable<User> {
   return fb.getLoginStatus().pipe(
@@ -87,30 +98,7 @@ export function login(): Observable<User> {
       },
     ),
     flatMap(
-      (response: StatusResponse): Observable<UserResponse> => {
-        if (response.status !== STATUS.CONNECTED) {
-          throw Error('Can not connected.');
-        }
-        return fb.getUser();
-      },
-    ),
-    flatMap(
-      (response: UserResponse): Observable<User> => {
-        const email: string = response.email;
-        const name: string = response.name;
-        let picture: Picture | null = null;
-
-        if (response.picture && response.picture.data) {
-          const data = response.picture.data;
-          picture = new Picture({
-            id: null,
-            url: data.url,
-            width: data.width,
-            height: data.height,
-            silhouette: data.is_silhouette,
-          } as PictureInterface);
-        }
-
+      (): Observable<User> => {
         return from<User>(
           axios.get(
             API_SERVER + '/login',
@@ -121,5 +109,46 @@ export function login(): Observable<User> {
         );
       },
     ),
+  );
+}
+
+export function currentUser(): Observable<User | null> {
+  return getLoginStatus().pipe(
+    flatMap(
+      (response: StatusResponse): Observable<UserResponse | null> => {
+        if (response.status !== STATUS.CONNECTED) {
+          return of(null);
+        }
+        return fb.getUser();
+      },
+    ),
+    switchMap((response: UserResponse | null): Observable<User | null> => {
+      if (!response) {
+        return of(null);
+      }
+
+      const email: string = response.email;
+      const name: string = response.name;
+      let picture: Picture | null = null;
+
+      if (response.picture && response.picture.data) {
+        const data = response.picture.data;
+        picture = new Picture({
+          id: null,
+          url: data.url,
+          width: data.width,
+          height: data.height,
+          silhouette: data.is_silhouette,
+        } as PictureInterface);
+      }
+      return of(
+        new User({
+          email,
+          name,
+          picture,
+          id: null,
+        }),
+      );
+    }),
   );
 }

@@ -60,7 +60,7 @@
     }
 
     public login(): void {
-      login().subscribe((user: User) => console.log(user));
+      login().subscribe((user: User) => this.$store.dispatch('login', user));
     }
 
     public logout(): void {
@@ -72,7 +72,7 @@
     }
 
     public getUser(): void {
-      getUser().subscribe((response: UserResponse) => console.log(response));
+      fb.getUser().subscribe((response: UserResponse) => console.log(response));
     }
   }
 </script>

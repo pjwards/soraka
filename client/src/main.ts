@@ -8,13 +8,12 @@ import '@/registerServiceWorker';
 import {
   loadSDK,
   asyncInit,
-  subscribe,
 } from '@/api/facebook';
 import {
   InitParams,
-  StatusResponse,
-  EVENT,
 } from '@/facebook.interfaces';
+import { currentUser } from '@/api/user';
+import { User } from '@/models/user';
 
 Vue.config.productionTip = false;
 
@@ -31,10 +30,7 @@ window.fbAsyncInit = asyncInit({
   xfbml: false,
   version: process.env.VUE_APP_FACEBOOK_API_VERSION,
 } as InitParams, () => {
-  subscribe(
-    EVENT.AUTH_AUTH_RESPONSE_CHANGE,
-    (response?: StatusResponse) => console.log(response),
-  );
+  currentUser().subscribe((user: User | null) => store.dispatch('login', user));
 });
 
 loadSDK();

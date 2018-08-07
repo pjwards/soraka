@@ -46,13 +46,22 @@
             <v-btn icon>
                 <v-icon>favorite</v-icon>
             </v-btn>
-            <v-avatar
-                    :tile="avatarTile"
-                    :size="avatarSize"
-                    color="grey lighten-4"
-            >
-                <img src="/apple-touch-icon-180x180.png" alt="avatar">
-            </v-avatar>
+            <v-btn icon>
+                <v-icon
+                        v-if="!user || !user.picture"
+                        :size="avatarSize">
+                    account_circle
+                </v-icon>
+                <v-avatar
+                        v-if="user && user.picture"
+                        :tile="avatarTile"
+                        :size="avatarSize"
+                        color="grey lighten-4"
+                >
+                    <img v-bind:src="user.picture.url" alt="avatar">
+                </v-avatar>
+            </v-btn>
+
         </v-toolbar>
         <v-content>
             <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
@@ -68,7 +77,8 @@
     Component,
     Vue,
   } from 'vue-property-decorator';
-  import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+  import HelloWorld from '@/components/HelloWorld.vue';
+  import { User } from '@/models/user';
 
   @Component({
     components: {
@@ -88,7 +98,11 @@
     private rightDrawer: boolean = false;
     private title: string = 'Vuetify.js';
     private avatarTile: boolean = false;
-    private avatarSize: number = 24;
+    private avatarSize: number = 36;
+
+    private get user(): User {
+      return this.$store.state.user;
+    }
   }
 </script>
 
