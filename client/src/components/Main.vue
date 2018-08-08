@@ -12,8 +12,8 @@
             <li @click='logout'>
                 Logout
             </li>
-            <li @click='signin'>
-                Sign In
+            <li @click='signUp'>
+                Sign Up
             </li>
         </ul>
 
@@ -29,7 +29,8 @@
   import * as fb from '../api/facebook';
   import {
     login,
-    signin,
+    logout,
+    signUp,
   } from '../api/user';
   import {
     StatusResponse,
@@ -43,7 +44,7 @@
   } from 'vue-property-decorator';
 
   @Component
-  export default class HelloWorld extends Vue {
+  export default class Main extends Vue {
     @Prop() private msg!: string;
 
     public created() {
@@ -64,11 +65,11 @@
     }
 
     public logout(): void {
-      fb.logout().subscribe((response: StatusResponse) => console.log(response));
+      logout().subscribe((result: boolean) => this.$store.dispatch('logout'));
     }
 
-    public signin(): void {
-      signin().subscribe((user: User) => this.$store.dispatch('login', user));
+    public signUp(): void {
+      signUp().subscribe((user: User) => this.$store.dispatch('login', user));
     }
 
     public getUser(): void {

@@ -1,4 +1,5 @@
 import {
+  EMPTY,
   Observable,
   of,
 } from 'rxjs';
@@ -22,7 +23,7 @@ import { Picture } from '@/models/picture';
 import { PictureInterface } from '@/shared/domain/inteface';
 import { getLoginStatus } from '@/api/facebook';
 
-export function signin(): Observable<User> {
+export function signUp(): Observable<User> {
   return fb.getLoginStatus().pipe(
     flatMap(
       (response: StatusResponse): Observable<StatusResponse> => {
@@ -79,6 +80,10 @@ export function signin(): Observable<User> {
         );
       },
     ),
+    catchError(() => {
+      fb.logout();
+      return EMPTY;
+    }),
   );
 }
 
@@ -110,7 +115,23 @@ export function login(): Observable<User> {
         );
       },
     ),
+    catchError(() => {
+      fb.logout();
+      return EMPTY;
+    }),
   );
+}
+
+export function logout(): Observable<boolean> {
+  return fb.logout()
+    .pipe(
+      switchMap((response: StatusResponse): Observable<boolean> => {
+        if (response.status !== STATUS.UNKNOWN) {
+          return of(false);
+        }
+        return of(true);
+      }),
+    );
 }
 
 export function currentUser(): Observable<User | null> {

@@ -46,25 +46,54 @@
             <v-btn icon>
                 <v-icon>favorite</v-icon>
             </v-btn>
-            <v-btn icon>
-                <v-icon
-                        v-if="!user || !user.picture"
-                        :size="avatarSize">
-                    account_circle
-                </v-icon>
-                <v-avatar
-                        v-if="user && user.picture"
-                        :tile="avatarTile"
-                        :size="avatarSize"
-                        color="grey lighten-4"
+            <v-menu offset-y
+                    v-if="!user || !user.picture">
+                <v-btn icon
+                       slot="activator"
                 >
-                    <img v-bind:src="user.picture.url" alt="avatar">
-                </v-avatar>
-            </v-btn>
+                    <v-icon
+                            :size="avatarSize">
+                        account_circle
+                    </v-icon>
+                </v-btn>
+                <v-list>
+                    <v-list-tile
+                            @click="login"
+                    >
+                        <v-list-tile-title>Sign In</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile
+                            @click="signUp"
+                    >
+                        <v-list-tile-title>Sign Up</v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+            </v-menu>
+            <v-menu offset-y
+                    v-if="user && user.picture">
+                <v-btn icon
+                       slot="activator"
+                >
+                    <v-avatar
+                            :tile="avatarTile"
+                            :size="avatarSize"
+                            color="grey lighten-4"
+                    >
+                        <img v-bind:src="user.picture.url" alt="avatar">
+                    </v-avatar>
+                </v-btn>
+                <v-list>
+                    <v-list-tile
+                            @click="logout"
+                    >
+                        <v-list-tile-title>Sign Out</v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+            </v-menu>
 
         </v-toolbar>
         <v-content>
-            <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+            <Main msg="Welcome to Your Vue.js + TypeScript App"/>
         </v-content>
         <v-footer :fixed="fixed" app>
             <span>&copy; 2017</span>
@@ -77,12 +106,17 @@
     Component,
     Vue,
   } from 'vue-property-decorator';
-  import HelloWorld from '@/components/HelloWorld.vue';
+  import Main from '@/components/Main.vue';
   import { User } from '@/models/user';
+  import {
+    login,
+    logout,
+    signUp,
+  } from '@/api/user';
 
   @Component({
     components: {
-      HelloWorld,
+      Main,
     },
   })
   export default class Home extends Vue {
@@ -91,17 +125,32 @@
     private fixed: boolean = false;
     private items: any = [{
       icon: 'bubble_chart',
-      title: 'Inspire',
+      title: 'Sign in',
+    }, {
+      icon: 'bubble_chart',
+      title: 'Sign up',
     }];
     private miniVariant: boolean = false;
     private right: boolean = false;
     private rightDrawer: boolean = false;
     private title: string = 'Vuetify.js';
     private avatarTile: boolean = false;
-    private avatarSize: number = 36;
+    private avatarSize: number = 24;
 
     private get user(): User {
       return this.$store.state.user;
+    }
+
+    public login(): void {
+      login().subscribe((user: User) => this.$store.dispatch('login', user));
+    }
+
+    public logout(): void {
+      logout().subscribe(() => this.$store.dispatch('logout'));
+    }
+
+    public signUp(): void {
+      signUp().subscribe((user: User) => this.$store.dispatch('login', user));
     }
   }
 </script>
