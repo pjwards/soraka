@@ -32,4 +32,8 @@ export class Picture extends Entity {
     default: false,
   })
   silhouette: boolean;
+
+  constructor(data?: Partial<Picture>) {
+    super(data);
+  }
 }

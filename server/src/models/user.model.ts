@@ -24,4 +24,8 @@ export class User extends Entity {
     type: 'number',
   })
   pictureId: number;
+
+  constructor(data?: Partial<User>) {
+    super(data);
+  }
 }

@@ -46,14 +46,14 @@
     "src"
   ],
   "dependencies": {
-    "@loopback/authentication": "^0.11.2",
-    "@loopback/boot": "^0.11.5",
-    "@loopback/context": "^0.11.9",
-    "@loopback/core": "^0.10.1",
-    "@loopback/dist-util": "^0.3.3",
-    "@loopback/openapi-v3": "^0.10.12",
-    "@loopback/repository": "^0.12.1",
-    "@loopback/rest": "^0.15.1",
+    "@loopback/authentication": "^0.11.6",
+    "@loopback/boot": "^0.12.6",
+    "@loopback/context": "^0.12.5",
+    "@loopback/core": "^0.11.5",
+    "@loopback/dist-util": "^0.3.6",
+    "@loopback/openapi-v3": "^0.12.6",
+    "@loopback/repository": "^0.15.1",
+    "@loopback/rest": "^0.19.6",
     "dotenv": "^6.0.0",
     "loopback-connector-mongodb": "^1.18.1",
     "node-fetch": "^2.2.0",
@@ -61,8 +61,8 @@
     "passport-strategy": "^1.0.0"
   },
   "devDependencies": {
-    "@loopback/build": "^0.6.11",
-    "@loopback/testlab": "^0.10.10",
+    "@loopback/build": "^0.7.1",
+    "@loopback/testlab": "^0.11.5",
     "@types/express": "^4.16.0",
     "@types/mocha": "^5.0.0",
     "@types/node": "^10.1.1",

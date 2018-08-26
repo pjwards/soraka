@@ -37,7 +37,6 @@ export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
     const name = this.metadata.strategy;
     if (name === 'AccessTokenStrategy') {
       return new AccessTokenStrategy(
-        {} as AccessTokenStrategyOptions,
         (
           accessToken: string,
           cb: (err: Error | null, user: User | null) => void,
@@ -53,7 +52,8 @@ export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
                 cb(null, users[0]);
               }
             });
-        }
+        },
+        {} as AccessTokenStrategyOptions,
       );
     } else {
       return Promise.reject(`The strategy ${name} is not available.`);

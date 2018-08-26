@@ -12,12 +12,8 @@ export class AccessTokenStrategy extends Strategy {
 
   private readonly verify: AccessTokenStrategyVerify;
 
-  constructor(options: AccessTokenStrategyOptions, verify: AccessTokenStrategyVerify) {
+  constructor(verify: AccessTokenStrategyVerify, options?: AccessTokenStrategyOptions) {
     super();
-    if (typeof options === 'function') {
-      verify = options;
-      options = {};
-    }
     if (!verify) throw new Error('Access Token authentication strategy requires a verify function');
 
     this.name = 'access-token';

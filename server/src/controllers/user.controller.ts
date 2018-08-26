@@ -12,6 +12,7 @@ import {
   requestBody
 } from '@loopback/rest';
 import {
+  authenticate,
   AuthenticationBindings,
 } from '@loopback/authentication';
 import { inject } from '@loopback/context';
@@ -34,38 +35,40 @@ export class UserController {
   }
 
   @post('/users')
-  async create(@requestBody() obj: UserInterface): Promise<UserInterface> {
+  async create(@requestBody() user: UserInterface): Promise<UserInterface> {
     let picture: Picture | null = null;
 
-    const count: number = await this.userRepository.count({ email: obj.email });
+    const count: number = await this.userRepository.count({ email: user.email });
 
     if (count > 0) {
       throw new Error('Alreay user exists.');
     }
 
-    if (obj.picture) {
-      picture = await this.pitureRepository.create(obj.picture as Partial<Picture>);
-      delete obj.picture;
+    if (user.picture) {
+      picture = await this.pitureRepository.create(user.picture as Partial<Picture>);
+      delete user.picture;
     }
 
-    const user: User = await this.userRepository.create({
-      ...obj,
+    const createdUser: User = await this.userRepository.create({
+      ...user,
       pictureId: picture ? picture.id : null,
     } as Partial<User>);
 
     return Promise.resolve<UserInterface>({
-      id: user.id,
-      email: user.email,
-      name: user.name,
+      id: createdUser.id,
+      email: createdUser.email,
+      name: createdUser.name,
       picture: picture,
     } as UserInterface);
   }
 
+  @authenticate('AccessTokenStrategy')
   @get('/users/count')
   async count(@param.query.string('where') where: Where): Promise<number> {
     return await this.userRepository.count(where);
   }
 
+  @authenticate('AccessTokenStrategy')
   @get('/users')
   async find(
     @param.query.string('filter') filter: Filter,
@@ -88,32 +91,37 @@ export class UserController {
     );
   }
 
+  @authenticate('AccessTokenStrategy')
   @patch('/users')
   async updateAll(
+    @requestBody() user: User,
     @param.query.string('where') where: Where,
-    @requestBody() obj: User,
   ): Promise<number> {
-    return await this.userRepository.updateAll(where, obj);
+    return await this.userRepository.updateAll(user, where);
   }
 
+  @authenticate('AccessTokenStrategy')
   @del('/users')
   async deleteAll(@param.query.string('where') where: Where): Promise<number> {
     return await this.userRepository.deleteAll(where);
   }
 
+  @authenticate('AccessTokenStrategy')
   @get('/users/{id}')
   async findById(@param.path.number('id') id: number): Promise<User> {
     return await this.userRepository.findById(id);
   }
 
+  @authenticate('AccessTokenStrategy')
   @patch('/users/{id}')
   async updateById(
     @param.path.number('id') id: number,
-    @requestBody() obj: User,
+    @requestBody() user: User,
   ): Promise<boolean> {
-    return await this.userRepository.updateById(id, obj);
+    return await this.userRepository.updateById(id, user);
   }
 
+  @authenticate('AccessTokenStrategy')
   @del('/users/{id}')
   async deleteById(@param.path.number('id') id: number): Promise<boolean> {
     return await this.userRepository.deleteById(id);
