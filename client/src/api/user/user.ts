@@ -5,7 +5,6 @@ import {
 } from 'rxjs';
 import {
   catchError,
-  flatMap,
   switchMap,
 } from 'rxjs/operators';
 import axios from 'axios';
@@ -13,25 +12,26 @@ import axios from 'axios';
 import { User } from '@/models/user';
 import { from } from '@/utils/http';
 import * as fb from '@/api/facebook';
+import { getLoginStatus } from '@/api/facebook';
 import {
-  StatusResponse,
   STATUS,
+  StatusResponse,
   UserResponse,
 } from '@/facebook.interfaces';
 import { API_SERVER } from '@/settings';
 import { Picture } from '@/models/picture';
 import { PictureInterface } from '@/shared/domain/inteface';
-import { getLoginStatus } from '@/api/facebook';
+import { Role } from '@/shared/domain/enum';
 
 export function signUp(): Observable<User> {
   return fb.getLoginStatus().pipe(
-    flatMap(
+    switchMap(
       (response: StatusResponse): Observable<StatusResponse> => {
         if (response.status !== STATUS.CONNECTED) {
           return fb.login();
         }
         return fb.logout().pipe(
-          flatMap(
+          switchMap(
             (): Observable<StatusResponse> => {
               return fb.login();
             },
@@ -39,7 +39,7 @@ export function signUp(): Observable<User> {
         );
       },
     ),
-    flatMap(
+    switchMap(
       (response: StatusResponse): Observable<UserResponse> => {
         if (response.status !== STATUS.CONNECTED) {
           throw Error('Can not connected.');
@@ -47,7 +47,7 @@ export function signUp(): Observable<User> {
         return fb.getUser();
       },
     ),
-    flatMap(
+    switchMap(
       (response: UserResponse): Observable<User> => {
         const email: string = response.email;
         const name: string = response.name;
@@ -72,6 +72,7 @@ export function signUp(): Observable<User> {
               name,
               picture,
               id: null,
+              role: null,
             }),
             {
               headers: { 'Access-Token': window.FB.getAccessToken() },
@@ -89,13 +90,13 @@ export function signUp(): Observable<User> {
 
 export function login(): Observable<User> {
   return fb.getLoginStatus().pipe(
-    flatMap(
+    switchMap(
       (response: StatusResponse): Observable<StatusResponse> => {
         if (response.status !== STATUS.CONNECTED) {
           return fb.login();
         }
         return fb.logout().pipe(
-          flatMap(
+          switchMap(
             (): Observable<StatusResponse> => {
               return fb.login();
             },
@@ -103,7 +104,7 @@ export function login(): Observable<User> {
         );
       },
     ),
-    flatMap(
+    switchMap(
       (): Observable<User> => {
         return from<User>(
           axios.get(
@@ -136,7 +137,7 @@ export function logout(): Observable<boolean> {
 
 export function currentUser(): Observable<User | null> {
   return getLoginStatus().pipe(
-    flatMap(
+    switchMap(
       (response: StatusResponse): Observable<User | null> => {
         if (response.status !== STATUS.CONNECTED) {
           return of(null);

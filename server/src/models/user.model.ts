@@ -1,4 +1,5 @@
 import {Entity, property, model} from '@loopback/repository';
+import { Role } from '../shared/domain/enum';
 
 @model()
 export class User extends Entity {
@@ -24,6 +25,13 @@ export class User extends Entity {
     type: 'number',
   })
   pictureId: number;
+
+  @property({
+    type: 'string',
+    required: true,
+    default: Role.User
+  })
+  role: Role;
 
   constructor(data?: Partial<User>) {
     super(data);

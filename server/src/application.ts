@@ -10,8 +10,6 @@ import {BootMixin, Booter, Binding} from '@loopback/boot';
 
 // juggler imports are required to infer types for RepositoryMixin!
 import {
-  Class,
-  Repository,
   RepositoryMixin,
   juggler,
 } from '@loopback/repository';

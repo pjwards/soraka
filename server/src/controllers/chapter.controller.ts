@@ -13,20 +13,17 @@ import {
 } from '@loopback/rest';
 import {
   Chapter,
-  User
 } from '../models';
 import { ChapterRepository } from '../repositories';
-import { inject } from '@loopback/context';
 import {
   authenticate,
-  AuthenticationBindings
 } from '@loopback/authentication';
 
 export class ChapterController {
   constructor(
     @repository(ChapterRepository)
     public chapterRepository: ChapterRepository,
-    @inject.getter(AuthenticationBindings.CURRENT_USER) private user: User,
+    // @inject.getter(AuthenticationBindings.CURRENT_USER) private user: User,
   ) {
   }
 

@@ -7,7 +7,6 @@ import { Strategy } from 'passport';
 import {
   AuthenticationBindings,
   AuthenticationMetadata,
-  UserProfile,
 } from '@loopback/authentication';
 import {
   AccessTokenStrategy
@@ -20,6 +19,7 @@ import {
 import { repository } from '@loopback/repository';
 import { UserRepository } from '../repositories';
 import { User } from '../models';
+import { Role } from '../shared/domain/enum';
 
 export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
   constructor(
@@ -35,6 +35,7 @@ export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
     }
 
     const name = this.metadata.strategy;
+    console.log(this.metadata);
     if (name === 'AccessTokenStrategy') {
       return new AccessTokenStrategy(
         (
@@ -49,11 +50,17 @@ export class MyAuthStrategyProvider implements Provider<Strategy | undefined> {
               if (users.length === 0) {
                 cb(null, null);
               } else {
+                const role: Role | undefined = this.metadata.options &&
+                  (this.metadata.options as AccessTokenStrategyOptions).role;
+                if (role && users[0].role !== role) {
+                  cb(new Error(`Does not have authority.(${role})`), null);
+                  return;
+                }
                 cb(null, users[0]);
               }
-            });
-        },
-        {} as AccessTokenStrategyOptions,
+            })
+            .catch((err: Error) => cb(err, null));
+        }
       );
     } else {
       return Promise.reject(`The strategy ${name} is not available.`);

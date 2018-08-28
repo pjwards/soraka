@@ -43,6 +43,7 @@ export class AuthController {
       email: user.email,
       name: user.name,
       picture: picture,
+      role: user.role,
     } as UserInterface);
   }
 }

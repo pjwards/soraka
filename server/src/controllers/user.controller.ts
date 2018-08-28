@@ -1,36 +1,35 @@
 import {
   Filter,
-  Where,
-  repository
+  repository,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  patch,
   del,
+  get,
+  param,
+  patch,
+  post,
   requestBody
 } from '@loopback/rest';
 import {
   authenticate,
-  AuthenticationBindings,
 } from '@loopback/authentication';
-import { inject } from '@loopback/context';
 import {
-  User,
-  Picture
+  Picture,
+  User
 } from '../models';
 import {
-  UserRepository,
-  PictureRepository
+  PictureRepository,
+  UserRepository
 } from '../repositories';
 import { UserInterface } from '../shared';
+import { Role } from '../shared/domain/enum';
 
 export class UserController {
   constructor(
     @repository(UserRepository) public userRepository: UserRepository,
     @repository(PictureRepository) public pitureRepository: PictureRepository,
-    @inject.getter(AuthenticationBindings.CURRENT_USER) private user: User,
+    // @inject.getter(AuthenticationBindings.CURRENT_USER) private user: User,
   ) {
   }
 
@@ -51,6 +50,7 @@ export class UserController {
 
     const createdUser: User = await this.userRepository.create({
       ...user,
+      role: Role.User,
       pictureId: picture ? picture.id : null,
     } as Partial<User>);
 
@@ -59,16 +59,17 @@ export class UserController {
       email: createdUser.email,
       name: createdUser.name,
       picture: picture,
+      role: createdUser.role,
     } as UserInterface);
   }
 
-  @authenticate('AccessTokenStrategy')
+  @authenticate('AccessTokenStrategy', {role: Role.Adimn})
   @get('/users/count')
   async count(@param.query.string('where') where: Where): Promise<number> {
     return await this.userRepository.count(where);
   }
 
-  @authenticate('AccessTokenStrategy')
+  @authenticate('AccessTokenStrategy', {role: Role.Adimn})
   @get('/users')
   async find(
     @param.query.string('filter') filter: Filter,
@@ -85,13 +86,14 @@ export class UserController {
             email: user.email,
             name: user.name,
             picture: picture,
+            role: user.role,
           } as UserInterface;
         },
       ),
     );
   }
 
-  @authenticate('AccessTokenStrategy')
+  @authenticate('AccessTokenStrategy', {role: Role.Adimn})
   @patch('/users')
   async updateAll(
     @requestBody() user: User,
@@ -100,19 +102,19 @@ export class UserController {
     return await this.userRepository.updateAll(user, where);
   }
 
-  @authenticate('AccessTokenStrategy')
+  @authenticate('AccessTokenStrategy', {role: Role.Adimn})
   @del('/users')
   async deleteAll(@param.query.string('where') where: Where): Promise<number> {
     return await this.userRepository.deleteAll(where);
   }
 
-  @authenticate('AccessTokenStrategy')
+  @authenticate('AccessTokenStrategy', {role: Role.Adimn})
   @get('/users/{id}')
   async findById(@param.path.number('id') id: number): Promise<User> {
     return await this.userRepository.findById(id);
   }
 
-  @authenticate('AccessTokenStrategy')
+  @authenticate('AccessTokenStrategy', {role: Role.Adimn})
   @patch('/users/{id}')
   async updateById(
     @param.path.number('id') id: number,
@@ -121,7 +123,7 @@ export class UserController {
     return await this.userRepository.updateById(id, user);
   }
 
-  @authenticate('AccessTokenStrategy')
+  @authenticate('AccessTokenStrategy', {role: Role.Adimn})
   @del('/users/{id}')
   async deleteById(@param.path.number('id') id: number): Promise<boolean> {
     return await this.userRepository.deleteById(id);
