@@ -2,7 +2,7 @@ import { UserInterface } from './user.inteface';
 
 export interface ChapterInterface {
   id: number | null;
-  user: UserInterface;
+  user: UserInterface | null;
   title: string;
   description: string | null;
   createDate: Date | null;
@@ -13,5 +13,5 @@ export interface ChapterInterface {
   userScore: number | null;
   testCount: number | null;
   testScore: number | null;
-  private: boolean | null;
+  open: boolean | null;
 }

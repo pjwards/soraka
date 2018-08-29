@@ -13,23 +13,28 @@ import {
 } from '@loopback/rest';
 import {
   Chapter,
+  User,
 } from '../models';
 import { ChapterRepository } from '../repositories';
 import {
   authenticate,
+  AuthenticationBindings,
 } from '@loopback/authentication';
+import { inject } from '@loopback/context';
 
 export class ChapterController {
   constructor(
     @repository(ChapterRepository)
     public chapterRepository: ChapterRepository,
-    // @inject.getter(AuthenticationBindings.CURRENT_USER) private user: User,
+    @inject.getter(AuthenticationBindings.CURRENT_USER) private user: User,
   ) {
   }
 
+  @authenticate('AccessTokenStrategy')
   @post('/chapters')
   async create(@requestBody() chapter: Chapter)
     : Promise<Chapter> {
+    chapter.userId = (this.user.id) as number;
     return await this.chapterRepository.create(chapter);
   }
 

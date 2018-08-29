@@ -79,7 +79,7 @@ export class Chapter extends Entity {
     type: 'boolean',
     required: true,
   })
-  private : boolean;
+  open : boolean;
 
   constructor(data?: Partial<Chapter>) {
     super(data);
