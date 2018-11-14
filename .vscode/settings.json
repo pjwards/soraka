@@ -1,8 +1,7 @@
 {
   "eslint.workingDirectories": [
-    "./backend",
-    "./frontend",
-    "./client"
+    "./package/client",
+    "./package/server"
   ],
   "files.insertFinalNewline": true,
   "prettier.singleQuote": true,

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "types": ["node", "mocha", "chai"],
+    "lib": ["es2015", "dom", "dom.iterable", "scripthost"]
+  },
+  "exclude": [
+    "./node_modules",
+    "test/**/*.js",
+    "test/**/*.ts",
+    "__test__/**/*.js",
+    "__test__/**/*.ts"
+  ]
+}
