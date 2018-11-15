@@ -35,7 +35,7 @@ const app = express();
 // Connect to MongoDB
 const mongoUrl: string = MONGODB_URI;
 (mongoose as any).Promise = bluebird;
-mongoose.connect(mongoUrl, { useMongoClient: true }).then(
+mongoose.connect(mongoUrl).then(
   () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
   },
 ).catch((err: any) => {
