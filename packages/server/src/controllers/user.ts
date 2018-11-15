@@ -7,6 +7,7 @@ import { Request, Response, NextFunction } from 'express';
 import { IVerifyOptions } from 'passport-local';
 import { WriteError } from 'mongodb';
 import '../config/passport';
+import logger from '../util/logger';
 const request = require('express-validator');
 
 
@@ -48,7 +49,7 @@ export let postLogin = (req: Request, res: Response, next: NextFunction) => {
     req.logIn(user, (err) => {
       if (err) { return next(err); }
       req.flash('success', { msg: 'Success! You are logged in.' });
-      res.redirect(req.session.returnTo || '/');
+      res.redirect(req.session && req.session.returnTo || '/');
     });
   })(req, res, next);
 };
@@ -63,23 +64,10 @@ export let logout = (req: Request, res: Response) => {
 };
 
 /**
- * GET /signup
- * Signup page.
- */
-export let getSignup = (req: Request, res: Response) => {
-  if (req.user) {
-    return res.redirect('/');
-  }
-  res.render('account/signup', {
-    title: 'Create Account'
-  });
-};
-
-/**
  * POST /signup
  * Create a new local account.
  */
-export let postSignup = (req: Request, res: Response, next: NextFunction) => {
+export let signup = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len({ min: 4 });
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
@@ -89,7 +77,9 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
 
   if (errors) {
     req.flash('errors', errors);
-    return res.redirect('/signup');
+    return res.status(500).json({
+      errors
+    });
   }
 
   const user = new User({
@@ -100,8 +90,9 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }
     if (existingUser) {
-      req.flash('errors', { msg: 'Account with that email address already exists.' });
-      return res.redirect('/signup');
+      return res.status(500).json({
+        message: 'Account with that email address already exists.'
+      });
     }
     user.save((err) => {
       if (err) { return next(err); }
@@ -109,7 +100,9 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
         if (err) {
           return next(err);
         }
-        res.redirect('/');
+        res.json({
+          user
+        })
       });
     });
   });
@@ -137,6 +130,10 @@ export let postUpdateProfile = (req: Request, res: Response, next: NextFunction)
 
   if (errors) {
     req.flash('errors', errors);
+    return res.redirect('/account');
+  }
+
+  if (!req.user) {
     return res.redirect('/account');
   }
 
@@ -176,6 +173,10 @@ export let postUpdatePassword = (req: Request, res: Response, next: NextFunction
     return res.redirect('/account');
   }
 
+  if (!req.user) {
+    return res.redirect('/account');
+  }
+
   User.findById(req.user.id, (err, user: UserModel) => {
     if (err) { return next(err); }
     user.password = req.body.password;
@@ -192,6 +193,10 @@ export let postUpdatePassword = (req: Request, res: Response, next: NextFunction
  * Delete user account.
  */
 export let postDeleteAccount = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.redirect('/');
+  }
+
   User.remove({ _id: req.user.id }, (err) => {
     if (err) { return next(err); }
     req.logout();
@@ -206,6 +211,11 @@ export let postDeleteAccount = (req: Request, res: Response, next: NextFunction)
  */
 export let getOauthUnlink = (req: Request, res: Response, next: NextFunction) => {
   const provider = req.params.provider;
+
+  if (!req.user) {
+    return res.redirect('/account');
+  }
+
   User.findById(req.user.id, (err, user: any) => {
     if (err) { return next(err); }
     user[provider] = undefined;

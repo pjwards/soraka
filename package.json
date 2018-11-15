@@ -19,7 +19,7 @@
     "changelog": "lerna run changelog",
     "release": "lerna run release",
     "postinstall": "lerna bootstrap",
-    "start:server": "cd packages/server && npm run serve-debug",
+    "start:server": "cd packages/server && npm run debug",
     "start:client": "cd packages/client && npm start"
   }
 }

@@ -1,9 +1,0 @@
-{
-  "eslint.workingDirectories": [
-    "./package/client",
-    "./package/server"
-  ],
-  "files.insertFinalNewline": true,
-  "prettier.singleQuote": true,
-  "prettier.trailingComma": "es5"
-}

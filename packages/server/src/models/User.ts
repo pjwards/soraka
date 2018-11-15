@@ -53,12 +53,12 @@ const userSchema = new mongoose.Schema({
 /**
  * Password hash middleware.
  */
-userSchema.pre('save', function save(next) {
+userSchema.pre('save', function save(this: UserModel, next) {
   const user = this;
   if (!user.isModified('password')) { return next(); }
   bcrypt.genSalt(10, (err, salt) => {
     if (err) { return next(err); }
-    bcrypt.hash(user.password, salt, undefined, (err: mongoose.Error, hash) => {
+    bcrypt.hash(user.password, salt, () => {}, (err: mongoose.Error, hash) => {
       if (err) { return next(err); }
       user.password = hash;
       next();
@@ -66,7 +66,7 @@ userSchema.pre('save', function save(next) {
   });
 });
 
-const comparePassword: comparePasswordFunction = function (candidatePassword, cb) {
+const comparePassword: comparePasswordFunction = function (this: UserModel, candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
     cb(err, isMatch);
   });
