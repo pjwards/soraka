@@ -32,7 +32,7 @@ export default class SignUpComponent extends Vue {
     signUpLocal({
       email: this.email,
       password: this.password,
-    } as SignUpForm)
+    })
       .pipe(
         catchError((err: any) => {
           if (err && err.errors) {

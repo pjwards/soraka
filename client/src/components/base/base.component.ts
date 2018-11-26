@@ -15,6 +15,7 @@ import {
 })
 export default class BaseComponent extends Vue {
   private drawer: boolean = false;
+  private items: any[] = [];
   private title: string = 'Nibble';
   private avatarTile: boolean = false;
   private avatarSize: number = 24;
