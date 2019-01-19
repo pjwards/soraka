@@ -35,6 +35,10 @@ export function logInLocal(form: SignUpForm): Observable<UserInterface> {
   );
 }
 
+export function logInGoogle(): void {
+  window.location.href = API_SERVER + '/oauth/google';
+}
+
 export function logOut(): Observable<any> {
   return from<any>(
     axios.get(

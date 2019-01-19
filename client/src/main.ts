@@ -5,14 +5,6 @@ import store from '@/store';
 import '@/vuetify';
 import '@/registerServiceWorker';
 import '@/axios';
-
-import {
-  loadSDK,
-  asyncInit,
-} from '@/api/facebook';
-import {
-  InitParams,
-} from '@/facebook.interfaces';
 import {
   currentUser,
 } from '@/api/user';
@@ -33,14 +25,4 @@ new Vue({
 });
 /* tslint:enable:no-unused-expression */
 
-// load facebook sdk
-window.fbAsyncInit = asyncInit({
-  appId: process.env.VUE_APP_FACEBOOK_APP_ID,
-  autoLogAppEvents: true,
-  xfbml: false,
-  version: process.env.VUE_APP_FACEBOOK_API_VERSION,
-} as InitParams, () => {
-  currentUser().subscribe((user: UserInterface) => store.dispatch('login', new User(user)));
-});
-
-loadSDK();
+currentUser().subscribe((user: UserInterface) => store.dispatch('login', new User(user)));

@@ -9,7 +9,7 @@
   "author": "Bowden Kelly",
   "license": "MIT",
   "scripts": {
-    "start": "npm run serve",
+    "start": "cross-env NODE_ENV=production npm run serve",
     "build": "npm run build-sass && npm run build-ts && npm run tslint && npm run copy-static-assets",
     "serve": "node dist/server.js",
     "watch-node": "nodemon dist/server.js",
@@ -22,7 +22,7 @@
     "watch-sass": "node-sass -w src/public/css/main.scss dist/public/css/main.css",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "copy-static-assets": "ts-node copyStaticAssets.ts",
-    "debug": "npm run build && npm run watch-debug",
+    "debug": "npm run build &&cross-env NODE_ENV=production npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
@@ -47,16 +47,17 @@
     "nodemailer": "^4.6.8",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
+    "passport-google-oauth20": "^1.0.0",
     "passport-local": "^1.0.0",
     "pug": "^2.0.3",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "winston": "^2.4.4"
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "@types/async": "^2.0.50",
     "@types/bcrypt-nodejs": "^0.0.30",
-    "@types/bluebird": "^3.5.24",
+    "@types/bluebird": "^3.5.25",
     "@types/body-parser": "^1.17.0",
     "@types/compression": "^0.0.35",
     "@types/cors": "^2.8.4",
@@ -80,6 +81,7 @@
     "@types/supertest": "^2.0.6",
     "@types/winston": "^2.4.4",
     "concurrently": "^3.6.1",
+    "cross-env": "^5.2.0",
     "jest": "^22.4.4",
     "node-sass": "^4.11.0",
     "nodemon": "^1.18.6",

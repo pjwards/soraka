@@ -1,12 +1,10 @@
 'use strict';
 
-import async from 'async';
-import request from 'request';
 import graph from 'fbgraph';
 import {
   Response,
   Request,
-  NextFunction
+  NextFunction,
 } from 'express';
 
 
@@ -37,7 +35,7 @@ export let getFacebook = (req: Request, res: Response, next: NextFunction) => {
       }
       res.render('api/facebook', {
         title: 'Facebook API',
-        profile: results
+        profile: results,
       });
     });
 };

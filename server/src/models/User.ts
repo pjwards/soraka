@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt-nodejs';
 import crypto from 'crypto';
-import mongoose from 'mongoose';
+import mongoose, { HookSyncCallback } from 'mongoose';
 import {
   comparePasswordFunction,
   UserModelInterface,
@@ -36,15 +36,15 @@ userSchema.pre('save', function save(this: UserModel, next) {
   if (!user.isModified('password')) { return next(); }
   bcrypt.genSalt(10, (err, salt) => {
     if (err) { return next(err); }
-    bcrypt.hash(user.password, salt, () => {}, (err: mongoose.Error, hash) => {
-      if (err) { return next(err); }
+    bcrypt.hash(user.password, salt, () => undefined, (e: mongoose.Error, hash) => {
+      if (e) { return next(e); }
       user.password = hash;
       next();
     });
   });
-});
+} as HookSyncCallback<UserModel>);
 
-const comparePassword: comparePasswordFunction = function (this: UserModel, candidatePassword, cb) {
+const comparePassword: comparePasswordFunction = function(this: UserModel, candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
     cb(err, isMatch);
   });

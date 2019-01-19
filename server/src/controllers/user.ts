@@ -20,8 +20,6 @@ import { IVerifyOptions } from 'passport-local';
 import { WriteError } from 'mongodb';
 import '../config/passport';
 
-const request = require('express-validator');
-
 /**
  * POST /login
  * Sign in using email and password.
@@ -112,8 +110,8 @@ export const signup = (req: Request, res: Response, next: NextFunction) => {
         ],
       });
     }
-    user.save((err: any) => {
-      if (err) {
+    user.save((e1: any) => {
+      if (e1) {
         return res.status(500).json({
           errors: [
             {
@@ -124,8 +122,8 @@ export const signup = (req: Request, res: Response, next: NextFunction) => {
           ],
         });
       }
-      req.logIn(user, (err: any) => {
-        if (err) {
+      req.logIn(user, (e2: any) => {
+        if (e2) {
           return res.status(500).json({
             errors: [
               {
@@ -163,6 +161,7 @@ export const getAccount = (req: Request, res: Response) => {
 
   const userJson: UserInterface = {
     email: req.user.email,
+    profile: req.user.profile,
   };
 
   res.status(200).json(userJson);
@@ -196,13 +195,13 @@ export let postUpdateProfile = (req: Request, res: Response, next: NextFunction)
     user.profile.gender = req.body.gender || '';
     user.profile.location = req.body.location || '';
     user.profile.website = req.body.website || '';
-    user.save((err: WriteError) => {
-      if (err) {
-        if (err.code === 11000) {
+    user.save((e: WriteError) => {
+      if (e) {
+        if (e.code === 11000) {
           req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
           return res.redirect('/account');
         }
-        return next(err);
+        return next(e);
       }
       req.flash('success', { msg: 'Profile information has been updated.' });
       res.redirect('/account');
@@ -234,9 +233,9 @@ export let postUpdatePassword = (req: Request, res: Response, next: NextFunction
       return next(err);
     }
     user.password = req.body.password;
-    user.save((err: WriteError) => {
-      if (err) {
-        return next(err);
+    user.save((e: WriteError) => {
+      if (e) {
+        return next(e);
       }
       req.flash('success', { msg: 'Password has been changed.' });
       res.redirect('/account');
@@ -280,9 +279,9 @@ export let getOauthUnlink = (req: Request, res: Response, next: NextFunction) =>
     }
     user[provider] = undefined;
     user.tokens = user.tokens.filter((token: AuthToken) => token.kind !== provider);
-    user.save((err: WriteError) => {
-      if (err) {
-        return next(err);
+    user.save((e: WriteError) => {
+      if (e) {
+        return next(e);
       }
       req.flash('info', { msg: `${provider} account has been unlinked.` });
       res.redirect('/account');
@@ -310,7 +309,7 @@ export let getReset = (req: Request, res: Response, next: NextFunction) => {
         return res.redirect('/forgot');
       }
       res.render('account/reset', {
-        title: 'Password Reset'
+        title: 'Password Reset',
       });
     });
 };
@@ -331,7 +330,7 @@ export let postReset = (req: Request, res: Response, next: NextFunction) => {
   }
 
   async.waterfall([
-    function resetPassword(done: Function) {
+    function resetPassword(done: CallbackFunctionVariadic) {
       User
         .findOne({ passwordResetToken: req.params.token })
         .where('passwordResetExpires').gt(Date.now())
@@ -346,35 +345,36 @@ export let postReset = (req: Request, res: Response, next: NextFunction) => {
           user.password = req.body.password;
           user.passwordResetToken = undefined;
           user.passwordResetExpires = undefined;
-          user.save((err: WriteError) => {
-            if (err) {
-              return next(err);
+          user.save((e1: WriteError) => {
+            if (e1) {
+              return next(e1);
             }
-            req.logIn(user, (err) => {
-              done(err, user);
+            req.logIn(user, (e2) => {
+              done(e2, user);
             });
           });
         });
     },
-    function sendResetPasswordEmail(user: UserModel, done: Function) {
+    function sendResetPasswordEmail(user: UserModel, done: CallbackFunctionVariadic) {
       const transporter = nodemailer.createTransport({
         service: 'SendGrid',
         auth: {
           user: process.env.SENDGRID_USER,
-          pass: process.env.SENDGRID_PASSWORD
-        }
+          pass: process.env.SENDGRID_PASSWORD,
+        },
       });
       const mailOptions = {
         to: user.email,
         from: 'express-ts@starter.com',
         subject: 'Your password has been changed',
-        text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`
+        text: `Hello,\n\nThis is a confirmation that the password
+         for your account ${user.email} has just been changed.\n`,
       };
       transporter.sendMail(mailOptions, (err) => {
         req.flash('success', { msg: 'Success! Your password has been changed.' });
         done(err);
       });
-    }
+    },
   ], (err) => {
     if (err) {
       return next(err);
@@ -392,7 +392,7 @@ export let getForgot = (req: Request, res: Response) => {
     return res.redirect('/');
   }
   res.render('account/forgot', {
-    title: 'Forgot Password'
+    title: 'Forgot Password',
   });
 };
 
@@ -412,13 +412,13 @@ export let postForgot = (req: Request, res: Response, next: NextFunction) => {
   }
 
   async.waterfall([
-    function createRandomToken(done: Function) {
+    function createRandomToken(done: CallbackFunctionVariadic) {
       crypto.randomBytes(16, (err, buf) => {
         const token = buf.toString('hex');
         done(err, token);
       });
     },
-    function setRandomToken(token: AuthToken, done: Function) {
+    function setRandomToken(token: AuthToken, done: CallbackFunctionVariadic) {
       User.findOne({ email: req.body.email }, (err, user: any) => {
         if (err) {
           return done(err);
@@ -429,33 +429,34 @@ export let postForgot = (req: Request, res: Response, next: NextFunction) => {
         }
         user.passwordResetToken = token;
         user.passwordResetExpires = Date.now() + 3600000; // 1 hour
-        user.save((err: WriteError) => {
-          done(err, token, user);
+        user.save((e: WriteError) => {
+          done(e, token, user);
         });
       });
     },
-    function sendForgotPasswordEmail(token: AuthToken, user: UserModel, done: Function) {
+    function sendForgotPasswordEmail(token: AuthToken, user: UserModel, done: CallbackFunctionVariadic) {
       const transporter = nodemailer.createTransport({
         service: 'SendGrid',
         auth: {
           user: process.env.SENDGRID_USER,
-          pass: process.env.SENDGRID_PASSWORD
-        }
+          pass: process.env.SENDGRID_PASSWORD,
+        },
       });
       const mailOptions = {
         to: user.email,
         from: 'hackathon@starter.com',
         subject: 'Reset your password on Hackathon Starter',
-        text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
+        text: `You are receiving this email because you (or someone else) have requested
+         the reset of the password for your account.\n\n
           Please click on the following link, or paste this into your browser to complete the process:\n\n
           http://${req.headers.host}/reset/${token}\n\n
-          If you did not request this, please ignore this email and your password will remain unchanged.\n`
+          If you did not request this, please ignore this email and your password will remain unchanged.\n`,
       };
       transporter.sendMail(mailOptions, (err) => {
         req.flash('info', { msg: `An e-mail has been sent to ${user.email} with further instructions.` });
         done(err);
       });
-    }
+    },
   ], (err) => {
     if (err) {
       return next(err);

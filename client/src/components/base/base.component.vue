@@ -1,18 +1,14 @@
 <template>
     <v-app dark>
-        <v-navigation-drawer
-                persistent
-                v-model="drawer"
-                enable-resize-watcher
-                fixed
-                app
-        >
+        <v-navigation-drawer persistent
+                             v-model="drawer"
+                             enable-resize-watcher
+                             fixed
+                             app>
             <v-list>
-                <v-list-tile
-                        value="true"
-                        v-for="(item, i) in items"
-                        :key="i"
-                >
+                <v-list-tile value="true"
+                             v-for="(item, i) in items"
+                             :key="i">
                     <v-list-tile-action>
                         <v-icon v-html="item.icon"></v-icon>
                     </v-list-tile-action>
@@ -56,13 +52,11 @@
                               :tile="avatarTile"
                               :size="avatarSize"
                               color="grey lighten-4">
-                        <img v-bind:src="user.picture.url" alt="avatar">
+                        <img v-bind:src="user.profile.picture" alt="avatar">
                     </v-avatar>
                 </v-btn>
                 <v-list>
-                    <v-list-tile
-                            @click="logOut"
-                    >
+                    <v-list-tile @click="logOut">
                         <v-list-tile-title>Log Out</v-list-tile-title>
                     </v-list-tile>
                 </v-list>

@@ -9,13 +9,14 @@ import {
 } from '@/interfaces/auth';
 import { ErrorResponse } from '@/types/domain/inteface/api';
 import {
+  logInGoogle,
   logInLocal,
 } from '@/api/user';
-import { SignUpForm } from '@/types/domain/inteface/auth';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { User } from '@/models/user';
 import { UserInterface } from '@/types/domain/inteface/user';
+import { SignInForm } from '@/types/domain/inteface/auth';
 
 @Component
 export default class LogInComponent extends Vue {
@@ -41,7 +42,7 @@ export default class LogInComponent extends Vue {
     logInLocal({
       email: this.email,
       password: this.password,
-    } as SignUpForm)
+    } as SignInForm)
       .pipe(
         catchError((err: any) => {
           if (err && err.errors) {
@@ -61,5 +62,9 @@ export default class LogInComponent extends Vue {
         this.$store.dispatch('login', new User(user))
           .then(() => this.$router.push('/'));
       });
+  }
+
+  public logInGoogle(): void {
+    logInGoogle();
   }
 }

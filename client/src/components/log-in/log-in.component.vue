@@ -9,12 +9,10 @@
                                 <v-toolbar-title>Log in</v-toolbar-title>
                                 <v-spacer></v-spacer>
                                 <v-tooltip bottom>
-                                    <v-btn
-                                            slot="activator"
-                                            icon
-                                            large
-                                            target="_blank"
-                                    >
+                                    <v-btn slot="activator"
+                                           icon
+                                           large
+                                           target="_blank">
                                         <v-icon large>help</v-icon>
                                     </v-btn>
                                     <span>help</span>
@@ -46,7 +44,7 @@
                                 <v-btn @click='logInLocal'>Log in</v-btn>
                             </v-card-actions>
                         </v-card>
-                        <v-btn color="primary">Log in with Facebook</v-btn>
+                        <v-btn color="error" @click="logInGoogle">Log in with Google</v-btn>
 
                         <v-snackbar v-for="(error, index) in errors"
                                     :key="index"
