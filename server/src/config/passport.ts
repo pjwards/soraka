@@ -1,19 +1,19 @@
 import passport from 'passport';
-import request from 'request';
 import passportLocal from 'passport-local';
 import passportFacebook from 'passport-facebook';
 import _ from 'lodash';
-
-// import { User, UserType } from '../models/User';
 import { default as User } from '../models/User';
 import {
   Request,
   Response,
-  NextFunction
+  NextFunction,
 } from 'express';
+import passportGoogle from 'passport-google-oauth20';
+import env from '../env';
 
 const LocalStrategy = passportLocal.Strategy;
 const FacebookStrategy = passportFacebook.Strategy;
+const GoogleStrategy = passportGoogle.Strategy;
 
 passport.serializeUser<any, any>((user, done) => {
   done(undefined, user.id);
@@ -37,9 +37,9 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
     if (!user) {
       return done(undefined, false, { message: `Email ${email} not found.` });
     }
-    user.comparePassword(password, (err: Error, isMatch: boolean) => {
-      if (err) {
-        return done(err);
+    user.comparePassword(password, (e: Error, isMatch: boolean) => {
+      if (e) {
+        return done(e);
       }
       if (isMatch) {
         return done(undefined, user);
@@ -72,9 +72,9 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_ID as string,
   clientSecret: process.env.FACEBOOK_SECRET as string,
-  callbackURL: '/auth/facebook/callback',
+  callbackURL: '/oauth/facebook/callback',
   profileFields: ['name', 'email', 'link', 'locale', 'timezone'],
-  passReqToCallback: true
+  passReqToCallback: true,
 }, (req: any, accessToken, refreshToken, profile, done) => {
   if (req.user) {
     User.findOne({ facebook: profile.id }, (err, existingUser) => {
@@ -91,9 +91,9 @@ passport.use(new FacebookStrategy({
         );
         done(err);
       } else {
-        User.findById(req.user.id, (err, user: any) => {
-          if (err) {
-            return done(err);
+        User.findById(req.user.id, (e1: any, user: any) => {
+          if (e1) {
+            return done(e1);
           }
           user.facebook = profile.id;
           user.tokens.push({ kind: 'facebook', accessToken });
@@ -101,34 +101,34 @@ passport.use(new FacebookStrategy({
             `${profile.name && profile.name.givenName} ${profile.name && profile.name.familyName}`;
           user.profile.gender = user.profile.gender || profile._json.gender;
           user.profile.picture = user.profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
-          user.save((err: Error) => {
+          user.save((e2: any) => {
             req.flash('info', { msg: 'Facebook account has been linked.' });
-            done(err, user);
+            done(e2, user);
           });
         });
       }
     });
   } else {
-    User.findOne({ facebook: profile.id }, (err, existingUser) => {
+    User.findOne({ facebook: profile.id }, (err: any, existingUser) => {
       if (err) {
         return done(err);
       }
       if (existingUser) {
         return done(undefined, existingUser);
       }
-      User.findOne({ email: profile._json.email }, (e, existingEmailUser) => {
-        if (e) {
-          return done(e);
+      User.findOne({ email: profile._json.email }, (e1: any, existingEmailUser) => {
+        if (e1) {
+          return done(e1);
         }
         if (existingEmailUser) {
           req.flash(
             'errors',
             {
               msg: 'There is already an account using this email address. ' +
-                'Sign in to that account and link it with Facebook manually from Account Settings.'
-            }
+                'Sign in to that account and link it with Facebook manually from Account Settings.',
+            },
           );
-          done(e);
+          done(e1);
         } else {
           const user: any = new User();
           user.email = profile._json.email;
@@ -138,13 +138,56 @@ passport.use(new FacebookStrategy({
           user.profile.gender = profile._json.gender;
           user.profile.picture = `https://graph.facebook.com/${profile.id}/picture?type=large`;
           user.profile.location = (profile._json.location) ? profile._json.location.name : '';
-          user.save((err: Error) => {
-            done(err, user);
+          user.save((e2: Error) => {
+            done(e2, user);
           });
         }
       });
     });
   }
+}));
+
+/**
+ * Sign in with Facebook.
+ */
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_ID as string,
+  clientSecret: process.env.GOOGLE_SECRET as string,
+  callbackURL: '/oauth/google/callback',
+}, (accessToken: string, refreshToken: any, profile: any, done: any) => {
+  console.log(profile);
+  User.findOne({ google: profile.id }, (err: any, existingUser: any) => {
+    if (err) {
+      return done(err);
+    }
+    if (existingUser) {
+      return done(undefined, existingUser);
+    }
+    User.findOne({ email: profile.emails[0].value }, (e1: any, existingEmailUser: any) => {
+      if (e1) {
+        return done(e1);
+      }
+      if (existingEmailUser) {
+        done(e1);
+        throw new Error(
+          'There is already an account using this email address. ' +
+          'Sign in to that account and link it with Google manually from Account Settings.',
+        );
+      } else {
+        const user: any = new User();
+        user.email = profile.emails[0].value;
+        user.google = profile.id;
+        user.tokens.push({ kind: 'google', accessToken });
+        user.profile.name = `${profile.name && profile.name.givenName} ${profile.name && profile.name.familyName}`;
+        user.profile.gender = profile.gender;
+        user.profile.picture = Array.isArray(profile.photos) ? profile.photos[0].value : undefined;
+        user.profile.location = (profile._json.language) ? profile._json.language : '';
+        user.save((e2: any) => {
+          done(e2, user);
+        });
+      }
+    });
+  });
 }));
 
 /**
@@ -154,7 +197,7 @@ export let isAuthenticated = (req: Request, res: Response, next: NextFunction) =
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login');
+  res.redirect(env.CLIENT + '/login');
 };
 
 /**
@@ -166,6 +209,6 @@ export let isAuthorized = (req: Request, res: Response, next: NextFunction) => {
   if (req.user && _.find(req.user.tokens, { kind: provider })) {
     next();
   } else {
-    res.redirect(`/auth/${provider}`);
+    res.redirect(`/oauth/${provider}`);
   }
 };

@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "esModuleInterop": true,
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -15,7 +14,7 @@
     "lib": ["es2015", "dom", "dom.iterable", "scripthost"]
   },
   "exclude": [
-    "./node_modules",
+    "node_modules",
     "test/**/*.js",
     "test/**/*.ts",
     "__test__/**/*.js",

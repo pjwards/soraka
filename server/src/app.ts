@@ -24,7 +24,6 @@ dotenv.config({ path: '.env.example' });
 
 // Controllers (route handlers)
 import * as homeController from './controllers/home';
-import * as contactController from './controllers/contact';
 import apiRouter from './routes/api';
 import authRouter from './routes/auth';
 import oauthRouter from './routes/oauth';
@@ -35,20 +34,25 @@ const app = express();
 // Connect to MongoDB
 const mongoUrl: string = MONGODB_URI;
 (mongoose as any).Promise = bluebird;
-mongoose.connect(mongoUrl).then(
+mongoose.connect(mongoUrl, { useNewUrlParser: true }).then(
   () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
   },
 ).catch((err: any) => {
   console.log('MongoDB connection error. Please make sure MongoDB is running. ' + err);
   // process.exit();
 });
+mongoose.set('useCreateIndex', true);
 
 // Express configuration
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 app.use(cors({
-  origin: ['http://127.0.0.1:8080', 'http://localhost:8080'],
+  origin: [
+    'http://127.0.0.1:8080',
+    'http://localhost:8080',
+    'http://myapp.com:8080',
+  ],
   credentials: true,
 }));
 app.use(compression());
@@ -82,8 +86,6 @@ app.use(
  * Primary app routes.
  */
 app.get('/', homeController.index);
-app.get('/contact', contactController.getContact);
-app.post('/contact', contactController.postContact);
 app.use('/', authRouter);
 
 /**

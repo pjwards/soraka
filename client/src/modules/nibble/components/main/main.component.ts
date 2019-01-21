@@ -1,9 +1,3 @@
-import * as fb from '../../../../api/facebook/index';
-import {
-  StatusResponse,
-  UserResponse,
-} from '@/facebook.interfaces';
-import { User } from '@/models/user';
 import {
   Component,
   Prop,
@@ -21,13 +15,5 @@ export default class MainComponent extends Vue {
     //   .then((data) => {
     //     this.msg = data.message;
     //   });
-  }
-
-  public getLoginStatus(): void {
-    fb.getLoginStatus().subscribe((response: StatusResponse) => console.log(response));
-  }
-
-  public getUser(): void {
-    fb.getUser().subscribe((response: UserResponse) => console.log(response));
   }
 }
