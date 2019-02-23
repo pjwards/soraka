@@ -16,6 +16,11 @@ import {
   MONGODB_URI,
   SESSION_SECRET,
 } from './util/secrets';
+import Swagger from './config/swagger-def';
+import {
+  Request,
+  Response,
+} from 'express';
 
 const MongoStore = mongo(session);
 
@@ -23,8 +28,6 @@ const MongoStore = mongo(session);
 dotenv.config({ path: '.env.example' });
 
 // Controllers (route handlers)
-import * as homeController from './controllers/home';
-import apiRouter from './routes/api';
 import authRouter from './routes/auth';
 import oauthRouter from './routes/oauth';
 
@@ -85,13 +88,15 @@ app.use(
 /**
  * Primary app routes.
  */
-app.get('/', homeController.index);
+app.get('/', (req: Request, res: Response): void => {
+  res.redirect('/api-docs');
+});
 app.use('/', authRouter);
 
 /**
  * API examples routes.
  */
-app.use('/api', apiRouter);
+app.use('/api-docs', Swagger.swaggerUi.serve, Swagger.swaggerUi.setup(Swagger.spec));
 
 /**
  * OAuth authentication routes. (Sign in)
