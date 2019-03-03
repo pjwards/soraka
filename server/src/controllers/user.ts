@@ -21,8 +21,37 @@ import { WriteError } from 'mongodb';
 import '../config/passport';
 
 /**
- * POST /login
- * Sign in using email and password.
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Sign in using email and password.
+ *     tags: [User]
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: email
+ *         description: Email to login.
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: body
+ *         name: password
+ *         description: Password to login.
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: user
+ *         schema:
+ *           $ref: '#/definitions/User'
+ *       500:
+ *         description: errors
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/GeneralError'
  */
 export const login = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail();
@@ -63,8 +92,16 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
- * GET /logout
- * Log out.
+ * @swagger
+ * /logout:
+ *   get:
+ *     summary: Log out.
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: message
+ *         schema:
+ *           $ref: '#/definitions/GeneralError'
  */
 export const logout = (req: Request, res: Response) => {
   req.logout();
@@ -74,8 +111,37 @@ export const logout = (req: Request, res: Response) => {
 };
 
 /**
- * POST /signup
- * Create a new local account.
+ * @swagger
+ * /signup:
+ *   post:
+ *     summary: Create a new local account.
+ *     tags: [User]
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: email
+ *         description: Email to create.
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: body
+ *         name: password
+ *         description: Password to create.
+ *         schema:
+ *           type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: user
+ *         schema:
+ *           $ref: '#/definitions/User'
+ *       500:
+ *         description: errors
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/GeneralError'
  */
 export const signup = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail();
@@ -143,8 +209,22 @@ export const signup = (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
- * GET /account
- * Profile page.
+ * @swagger
+ * /account:
+ *   get:
+ *     summary: Profile page.
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: user
+ *         schema:
+ *           $ref: '#/definitions/User'
+ *       500:
+ *         description: errors
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/GeneralError'
  */
 export const getAccount = (req: Request, res: Response) => {
   if (!req.user) {

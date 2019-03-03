@@ -1,0 +1,12 @@
+tags:
+  name: GeneralError
+  description: General Error
+definitions:
+  GeneralError:
+    type: object
+    required:
+      - msg
+    properties:
+      msg:
+        type: string
+        description: message
