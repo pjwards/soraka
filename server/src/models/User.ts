@@ -8,6 +8,24 @@ import {
 
 export type UserModel = mongoose.Document & UserModelInterface;
 
+/**
+ * @swagger
+ * tags:
+ *   name: User
+ *   description: User Models
+ * definitions:
+ *   User:
+ *     type: object
+ *     required:
+ *        - email
+ *     properties:
+ *       email:
+ *         type: string
+ *         description: Email
+ *       password:
+ *         type: string
+ *         description : Password
+ */
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,

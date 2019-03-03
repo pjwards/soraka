@@ -8,36 +8,6 @@ import * as passportConfig from '../config/passport';
 
 const router = express.Router();
 
-/**
- * @swagger
- * tags:
- *   name: User
- *   description: User Models
- * definitions:
- *   User:
- *     type: object
- *     required:
- *       - email
- *     properties:
- *       email:
- *         type: string
- *         description: Email
- *       password:
- *         type: string
- *         description: Password
- */
-/**
- * @swagger
- * /login:
- *   get:
- *     summary: Sign in using email and password.
- *     tags: [User]
- *     responses:
- *       200:
- *         description: user
- *         schema:
- *            $ref: '#/definitions/User'
- */
 router.post('/login', userController.login);
 router.get('/logout', userController.logout);
 router.get('/forgot', userController.getForgot);

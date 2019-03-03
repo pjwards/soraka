@@ -155,7 +155,6 @@ passport.use(new GoogleStrategy({
   clientSecret: process.env.GOOGLE_SECRET as string,
   callbackURL: '/oauth/google/callback',
 }, (accessToken: string, refreshToken: any, profile: any, done: any) => {
-  console.log(profile);
   User.findOne({ google: profile.id }, (err: any, existingUser: any) => {
     if (err) {
       return done(err);
