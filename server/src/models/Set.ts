@@ -1,16 +1,20 @@
-import mongoose from 'mongoose';
-import {SetInterface} from "../types/domain/inteface/set";
+import {Aggregate, Document, model, Model, Query, Schema} from 'mongoose';
+import {SetInterface} from '../types/domain/inteface/set';
 
-export type SetModel = mongoose.Document & SetInterface;
+export type SetModel = Aggregate<SetInterface> &
+    Document &
+    Query<SetInterface> &
+    Model<Document> &
+    SetInterface;
 
-const setSchema = new mongoose.Schema({
-    owner: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
-    cards: [{type: mongoose.Schema.Types.ObjectId, ref: 'card'}],
+const setSchema: Schema = new Schema({
+    owner: {type: Schema.Types.ObjectId, ref: 'user'},
+    cards: [{type: Schema.Types.ObjectId, ref: 'card'}],
     state: String,
     title: String,
     definition: String,
-}, { timestamps: true });
+}, {timestamps: true});
 
 
-const Set = mongoose.model('Card', setSchema);
+const Set: Model<SetModel> = model('Card', setSchema);
 export default Set;

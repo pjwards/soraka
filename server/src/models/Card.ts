@@ -1,14 +1,18 @@
-import mongoose from 'mongoose';
-import {CardInterface} from "../types/domain/inteface/card";
+import {Aggregate, Document, model, Model, Query, Schema} from 'mongoose';
+import {CardInterface} from '../types/domain/inteface/card';
 
-export type CardModel = mongoose.Document & CardInterface;
+export type CardModel = Aggregate<CardInterface> &
+    Document &
+    Query<CardInterface> &
+    Model<Document> &
+    CardInterface;
 
-const cardSchema = new mongoose.Schema({
-    owner: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
-    word: {type: mongoose.Schema.Types.ObjectId, ref: 'definition'},
-    meanings: [{type: mongoose.Schema.Types.ObjectId, ref: 'definition'}],
-}, { timestamps: true });
+const cardSchema: Schema = new Schema({
+    owner: {type: Schema.Types.ObjectId, ref: 'user'},
+    word: {type: Schema.Types.ObjectId, ref: 'definition'},
+    meanings: [{type: Schema.Types.ObjectId, ref: 'definition'}],
+}, {timestamps: true});
 
 
-const Card = mongoose.model('Card', cardSchema);
+const Card: Model<CardModel> = model('Card', cardSchema);
 export default Card;

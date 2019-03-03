@@ -1,4 +1,4 @@
-import {LearnDataInterface} from "./learnData";
+import {LearnDataInterface} from './learnData';
 
 export interface DefinitionInterface {
     learnData?: LearnDataInterface;

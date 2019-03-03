@@ -1,5 +1,5 @@
-import {UserInterface} from "./user";
-import {CardInterface} from "./card";
+import {UserInterface} from './user';
+import {CardInterface} from './card';
 
 export interface SetInterface {
     owner?: UserInterface;
