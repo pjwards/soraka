@@ -30,7 +30,7 @@ export type UserModel = Aggregate<UserModelInterface> &
  *         type: string
  *         description : Password
  */
-const userSchema: Schema = new Schema({
+export const UserSchema: Schema = new Schema({
     email: {type: String, unique: true},
     password: String,
     passwordResetToken: String,
@@ -53,7 +53,7 @@ const userSchema: Schema = new Schema({
 /**
  * Password hash middleware.
  */
-userSchema.pre('save', function save(this: UserModel, next) {
+UserSchema.pre('save', function save(this: UserModel, next) {
     const user: UserModel = this;
     if (!user.isModified('password')) {
         return next();
@@ -78,12 +78,12 @@ const comparePassword: comparePasswordFunction = function(this: UserModel, candi
     });
 };
 
-userSchema.methods.comparePassword = comparePassword;
+UserSchema.methods.comparePassword = comparePassword;
 
 /**
  * Helper method for getting user's gravatar.
  */
-userSchema.methods.gravatar = function(size: number) {
+UserSchema.methods.gravatar = function(size: number) {
     if (!size) {
         size = 200;
     }
@@ -95,5 +95,5 @@ userSchema.methods.gravatar = function(size: number) {
 };
 
 // export const User: UserType = mongoose.model<UserType>('User', userSchema);
-const User: Model<UserModel> = model('User', userSchema);
+const User: Model<UserModel> = model('User', UserSchema);
 export default User;

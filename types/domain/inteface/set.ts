@@ -8,3 +8,8 @@ export interface SetInterface {
     title: string;
     description: string;
 }
+
+export enum SetState {
+    Public = 'public',
+    Private = 'private',
+}
