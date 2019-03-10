@@ -21,7 +21,7 @@ export type CardModel = Aggregate<CardInterface> &
  *     properties:
  *       owner:
  *         type: User
- *         description: Meaning Object
+ *         description: User Object
  *       word:
  *         type: Definition
  *         description: Meaning Object
