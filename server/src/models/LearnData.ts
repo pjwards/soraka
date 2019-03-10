@@ -7,6 +7,37 @@ export type LearnDataModel = Aggregate<LearnDataInterface> &
     Model<Document> &
     LearnDataInterface;
 
+/**
+ * @swagger
+ * tags:
+ *   name: LearnData
+ *   description: LearnData Model
+ * definitions:
+ *   LearnData:
+ *     type: object
+ *     required:
+ *        - lastLearningDate
+ *        - learnCount
+ *        - correctCount
+ *        - incorrectCount
+ *        - favorite
+ *     properties:
+ *       lastLearningDate:
+ *         type: Date
+ *         description: Last access date
+ *       learnCount:
+ *         type: Number
+ *         description : Counts of Click
+ *       correctCount:
+ *         type: Number
+ *         description: Number of word quiz pass
+ *       incorrectCount:
+ *         type: Number
+ *         description: Number of word quiz failures
+ *       favorite:
+ *         type: Boolean
+ *         description: User-preferred words
+ */
 const learnDataSchema: Schema = new Schema({
     lastLearningDate: Date,
     learnCount: Number,

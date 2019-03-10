@@ -16,7 +16,7 @@ export type UserModel = Aggregate<UserModelInterface> &
  * @swagger
  * tags:
  *   name: User
- *   description: User Models
+ *   description: User Model
  * definitions:
  *   User:
  *     type: object
