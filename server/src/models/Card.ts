@@ -7,6 +7,28 @@ export type CardModel = Aggregate<CardInterface> &
     Model<Document> &
     CardInterface;
 
+/**
+ * @swagger
+ * tags:
+ *   name: Card
+ *   description: Card Model
+ * definitions:
+ *   Card:
+ *     type: object
+ *     required:
+ *        - owner
+ *        - word
+ *     properties:
+ *       owner:
+ *         type: User
+ *         description: User Object
+ *       word:
+ *         type: Definition
+ *         description: Meaning Object
+ *       meanings:
+ *         type: Definition
+ *         description: Meaning Objects
+ */
 const cardSchema: Schema = new Schema({
     owner: {type: Schema.Types.ObjectId, ref: 'user'},
     word: {type: Schema.Types.ObjectId, ref: 'definition'},

@@ -7,6 +7,21 @@ export type DefinitionModel = Aggregate<DefinitionInterface> &
     Model<Document> &
     DefinitionInterface;
 
+/**
+ * @swagger
+ * tags:
+ *   name: Definition
+ *   description: Definition Model
+ * definitions:
+ *   Definition:
+ *     type: object
+ *     required:
+ *        - learnData
+ *     properties:
+ *       learnData:
+ *         type: LearnData
+ *         description: Meaning Object
+ */
 const definitionSchema: Schema = new Schema({
     learnData: {type: Schema.Types.ObjectId, ref: 'learnData'},
 }, {timestamps: true});
