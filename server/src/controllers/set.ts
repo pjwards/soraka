@@ -92,17 +92,19 @@ export const createSet = (req: Request, res: Response, next: NextFunction) => {
  *             $ref: '#/definitions/GeneralError'
  */
 export const readSet = (req: Request, res: Response, next: NextFunction) => {
-  return Set.find(
-    {},
-    {
-      _id: true,
-      'owner.email': true,
-      cards: true,
-      state: true,
-      title: true,
-      definition: true,
-    },
-    (err: any, sets) => {
+  return Set
+    .find(
+      {},
+      {
+        _id: true,
+        owner: true,
+        cards: true,
+        state: true,
+        title: true,
+        definition: true,
+      })
+    .populate('owner')
+    .exec((err: any, sets) => {
       if (err) {
         return res.status(500).send({
           errors: [

@@ -1,6 +1,5 @@
 import {Aggregate, Document, model, Model, Query, Schema} from 'mongoose';
 import {SetInterface} from '../types/domain/inteface/set';
-import { UserSchema } from './User';
 
 export type SetModel = Aggregate<SetInterface> &
     Document &
@@ -50,7 +49,7 @@ export type SetModel = Aggregate<SetInterface> &
  *         description: Card description
  */
 const setSchema: Schema = new Schema({
-    owner: UserSchema,
+    owner: {type: Schema.Types.ObjectId, ref: 'User'},
     cards: [{type: Schema.Types.ObjectId, ref: 'Card'}],
     state: String,
     title: String,
