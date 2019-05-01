@@ -44,7 +44,7 @@ export type SetModel = Aggregate<SetInterface> &
  *       title:
  *         type: string
  *         description: Card title
- *       definition:
+ *       description:
  *         type: string
  *         description: Card description
  */
@@ -53,7 +53,7 @@ const setSchema: Schema = new Schema({
     cards: [{type: Schema.Types.ObjectId, ref: 'Card'}],
     state: String,
     title: String,
-    definition: String,
+    description: String,
 }, {timestamps: true});
 
 
