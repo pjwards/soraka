@@ -308,7 +308,7 @@ export let postUpdatePassword = (req: Request, res: Response, next: NextFunction
     return res.redirect('/account');
   }
 
-  User.findById(req.user.id, (err, user: UserModel) => {
+  User.findById(req.user.id, (err: any, user: UserModel) => {
     if (err) {
       return next(err);
     }
@@ -332,7 +332,7 @@ export let postDeleteAccount = (req: Request, res: Response, next: NextFunction)
     return res.redirect('/');
   }
 
-  User.remove({ _id: req.user.id }, (err) => {
+  User.remove({ _id: req.user.id }, (err: any) => {
     if (err) {
       return next(err);
     }
@@ -414,7 +414,7 @@ export let postReset = (req: Request, res: Response, next: NextFunction) => {
       User
         .findOne({ passwordResetToken: req.params.token })
         .where('passwordResetExpires').gt(Date.now())
-        .exec((err, user: any) => {
+        .exec((err: any, user: any) => {
           if (err) {
             return next(err);
           }
