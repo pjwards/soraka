@@ -10,6 +10,18 @@ export type SetModel = Aggregate<SetInterface> &
 /**
  * @swagger
  * tags:
+ *   name: SetState
+ *   description: SetState
+ * definitions:
+ *   SetState:
+ *     type: string
+ *     enum:
+ *       - public
+ *       - private
+ */
+/**
+ * @swagger
+ * tags:
  *   name: Set
  *   description: Set Model
  * definitions:
@@ -35,16 +47,15 @@ export type SetModel = Aggregate<SetInterface> &
  *       definition:
  *         type: string
  *         description: Card description
- *
  */
 const setSchema: Schema = new Schema({
-    owner: {type: Schema.Types.ObjectId, ref: 'user'},
-    cards: [{type: Schema.Types.ObjectId, ref: 'card'}],
+    owner: {type: Schema.Types.ObjectId, ref: 'User'},
+    cards: [{type: Schema.Types.ObjectId, ref: 'Card'}],
     state: String,
     title: String,
     definition: String,
 }, {timestamps: true});
 
 
-const Set: Model<SetModel> = model('Card', setSchema);
+const Set: Model<SetModel> = model('Set', setSchema);
 export default Set;

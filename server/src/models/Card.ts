@@ -30,9 +30,9 @@ export type CardModel = Aggregate<CardInterface> &
  *         description: Meaning Objects
  */
 const cardSchema: Schema = new Schema({
-    owner: {type: Schema.Types.ObjectId, ref: 'user'},
-    word: {type: Schema.Types.ObjectId, ref: 'definition'},
-    meanings: [{type: Schema.Types.ObjectId, ref: 'definition'}],
+    owner: {type: Schema.Types.ObjectId, ref: 'User'},
+    word: {type: Schema.Types.ObjectId, ref: 'Definition'},
+    meanings: [{type: Schema.Types.ObjectId, ref: 'Definition'}],
 }, {timestamps: true});
 
 

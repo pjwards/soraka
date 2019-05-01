@@ -29,6 +29,7 @@ dotenv.config({ path: '.env.example' });
 
 // Controllers (route handlers)
 import authRouter from './routes/auth';
+import setRouter from './routes/set';
 import oauthRouter from './routes/oauth';
 
 // Create Express server
@@ -92,6 +93,7 @@ app.get('/', (req: Request, res: Response): void => {
   res.redirect('/api-docs');
 });
 app.use('/', authRouter);
+app.use('/sets', setRouter);
 
 /**
  * API examples routes.
