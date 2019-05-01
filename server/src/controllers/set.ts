@@ -103,7 +103,7 @@ export const readSet = (req: Request, res: Response, next: NextFunction) => {
         title: true,
         definition: true,
       })
-    .populate('owner')
+    .populate('owner', 'email profile')
     .exec((err: any, sets) => {
       if (err) {
         return res.status(500).send({

@@ -15,6 +15,7 @@
     "types-client": "rm -rf client/src/types && cp -r types/ client/src/types/",
     "types-server": "rm -rf server/src/types && cp -r types/ server/src/types/",
     "types": "npm run types-client && npm run types-server",
+    "lint": "node script/lint.js",
     "start:server": "cd server && npm run debug",
     "start:client": "cd client && npm start"
   }
